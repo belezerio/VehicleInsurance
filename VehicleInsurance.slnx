@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="VehicleInsurance.API/VehicleInsurance.API.csproj" />
+  <Project Path="VehicleInsurance.Core/VehicleInsurance.Core.csproj" />
+  <Project Path="VehicleInsurance.Infrastructure/VehicleInsurance.Infrastructure.csproj" />
+  <Project Path="VehicleInsurance.Tests/VehicleInsurance.Tests.csproj" />
+</Solution>

@@ -1,0 +1,11 @@
+C:\Users\yash\VehicleInsurance\VehicleInsurance.Core\bin\Debug\net10.0\VehicleInsurance.Core.deps.json
+C:\Users\yash\VehicleInsurance\VehicleInsurance.Core\bin\Debug\net10.0\VehicleInsurance.Core.dll
+C:\Users\yash\VehicleInsurance\VehicleInsurance.Core\bin\Debug\net10.0\VehicleInsurance.Core.pdb
+C:\Users\yash\VehicleInsurance\VehicleInsurance.Core\obj\Debug\net10.0\VehicleInsurance.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\yash\VehicleInsurance\VehicleInsurance.Core\obj\Debug\net10.0\VehicleInsurance.Core.AssemblyInfoInputs.cache
+C:\Users\yash\VehicleInsurance\VehicleInsurance.Core\obj\Debug\net10.0\VehicleInsurance.Core.AssemblyInfo.cs
+C:\Users\yash\VehicleInsurance\VehicleInsurance.Core\obj\Debug\net10.0\VehicleInsurance.Core.csproj.CoreCompileInputs.cache
+C:\Users\yash\VehicleInsurance\VehicleInsurance.Core\obj\Debug\net10.0\VehicleInsurance.Core.dll
+C:\Users\yash\VehicleInsurance\VehicleInsurance.Core\obj\Debug\net10.0\refint\VehicleInsurance.Core.dll
+C:\Users\yash\VehicleInsurance\VehicleInsurance.Core\obj\Debug\net10.0\VehicleInsurance.Core.pdb
+C:\Users\yash\VehicleInsurance\VehicleInsurance.Core\obj\Debug\net10.0\ref\VehicleInsurance.Core.dll

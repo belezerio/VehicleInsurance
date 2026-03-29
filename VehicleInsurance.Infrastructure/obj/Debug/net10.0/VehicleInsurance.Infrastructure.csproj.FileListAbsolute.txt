@@ -1,0 +1,17 @@
+C:\Users\yash\VehicleInsurance\VehicleInsurance.Infrastructure\bin\Debug\net10.0\VehicleInsurance.Infrastructure.deps.json
+C:\Users\yash\VehicleInsurance\VehicleInsurance.Infrastructure\bin\Debug\net10.0\VehicleInsurance.Infrastructure.dll
+C:\Users\yash\VehicleInsurance\VehicleInsurance.Infrastructure\bin\Debug\net10.0\VehicleInsurance.Infrastructure.pdb
+C:\Users\yash\VehicleInsurance\VehicleInsurance.Infrastructure\bin\Debug\net10.0\VehicleInsurance.Core.dll
+C:\Users\yash\VehicleInsurance\VehicleInsurance.Infrastructure\bin\Debug\net10.0\VehicleInsurance.Core.pdb
+C:\Users\yash\VehicleInsurance\VehicleInsurance.Infrastructure\obj\Debug\net10.0\VehicleInsurance.Infrastructure.csproj.AssemblyReference.cache
+C:\Users\yash\VehicleInsurance\VehicleInsurance.Infrastructure\obj\Debug\net10.0\VehicleInsurance.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\yash\VehicleInsurance\VehicleInsurance.Infrastructure\obj\Debug\net10.0\VehicleInsurance.Infrastructure.AssemblyInfoInputs.cache
+C:\Users\yash\VehicleInsurance\VehicleInsurance.Infrastructure\obj\Debug\net10.0\VehicleInsurance.Infrastructure.AssemblyInfo.cs
+C:\Users\yash\VehicleInsurance\VehicleInsurance.Infrastructure\obj\Debug\net10.0\VehicleInsurance.Infrastructure.csproj.CoreCompileInputs.cache
+C:\Users\yash\VehicleInsurance\VehicleInsurance.Infrastructure\obj\Debug\net10.0\VehicleI.CEA8A880.Up2Date
+C:\Users\yash\VehicleInsurance\VehicleInsurance.Infrastructure\obj\Debug\net10.0\VehicleInsurance.Infrastructure.dll
+C:\Users\yash\VehicleInsurance\VehicleInsurance.Infrastructure\obj\Debug\net10.0\refint\VehicleInsurance.Infrastructure.dll
+C:\Users\yash\VehicleInsurance\VehicleInsurance.Infrastructure\obj\Debug\net10.0\VehicleInsurance.Infrastructure.pdb
+C:\Users\yash\VehicleInsurance\VehicleInsurance.Infrastructure\obj\Debug\net10.0\ref\VehicleInsurance.Infrastructure.dll
+C:\Users\yash\VehicleInsurance\VehicleInsurance.Infrastructure\bin\Debug\net10.0\VehicleInsurance.Infrastructure.runtimeconfig.json
+C:\Users\yash\VehicleInsurance\VehicleInsurance.Infrastructure\obj\Debug\net10.0\VehicleInsurance.Infrastructure.genruntimeconfig.cache
