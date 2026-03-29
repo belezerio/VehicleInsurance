@@ -15,3 +15,4 @@ C:\Users\yash\VehicleInsurance\VehicleInsurance.Infrastructure\obj\Debug\net10.0
 C:\Users\yash\VehicleInsurance\VehicleInsurance.Infrastructure\obj\Debug\net10.0\ref\VehicleInsurance.Infrastructure.dll
 C:\Users\yash\VehicleInsurance\VehicleInsurance.Infrastructure\bin\Debug\net10.0\VehicleInsurance.Infrastructure.runtimeconfig.json
 C:\Users\yash\VehicleInsurance\VehicleInsurance.Infrastructure\obj\Debug\net10.0\VehicleInsurance.Infrastructure.genruntimeconfig.cache
+C:\Users\yash\VehicleInsurance\VehicleInsurance.Infrastructure\obj\Debug\net10.0\VehicleInsurance.Infrastructure.sourcelink.json

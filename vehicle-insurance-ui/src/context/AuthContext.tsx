@@ -1,11 +1,12 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState } from 'react';
+import type { ReactNode } from 'react';
 import { jwtDecode } from 'jwt-decode';
 
 interface JwtPayload {
-  nameid: string;
-  email: string;
-  role: string;
-  unique_name: string;
+  'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier': string;
+  'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress': string;
+  'http://schemas.microsoft.com/ws/2008/06/identity/claims/role': string;
+  'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name': string;
 }
 
 interface AuthContextType {
@@ -35,17 +36,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.getItem('userName')
   );
 
-  const login = (newToken: string) => {
-    const decoded = jwtDecode<JwtPayload>(newToken);
-    localStorage.setItem('token', newToken);
-    localStorage.setItem('userRole', decoded.role);
-    localStorage.setItem('userId', decoded.nameid);
-    localStorage.setItem('userName', decoded.unique_name);
-    setToken(newToken);
-    setUserRole(decoded.role);
-    setUserId(parseInt(decoded.nameid));
-    setUserName(decoded.unique_name);
-  };
+ const login = (newToken: string) => {
+  const decoded = jwtDecode<JwtPayload>(newToken);
+  const role = decoded['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
+  const userId = decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'];
+  const userName = decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'];
+
+  localStorage.setItem('token', newToken);
+  localStorage.setItem('userRole', role);
+  localStorage.setItem('userId', userId);
+  localStorage.setItem('userName', userName);
+
+  setToken(newToken);
+  setUserRole(role);
+  setUserId(parseInt(userId));
+  setUserName(userName);
+};
 
   const logout = () => {
     localStorage.clear();

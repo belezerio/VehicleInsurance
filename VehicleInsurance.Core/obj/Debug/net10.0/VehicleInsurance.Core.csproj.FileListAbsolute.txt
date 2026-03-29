@@ -9,3 +9,4 @@ C:\Users\yash\VehicleInsurance\VehicleInsurance.Core\obj\Debug\net10.0\VehicleIn
 C:\Users\yash\VehicleInsurance\VehicleInsurance.Core\obj\Debug\net10.0\refint\VehicleInsurance.Core.dll
 C:\Users\yash\VehicleInsurance\VehicleInsurance.Core\obj\Debug\net10.0\VehicleInsurance.Core.pdb
 C:\Users\yash\VehicleInsurance\VehicleInsurance.Core\obj\Debug\net10.0\ref\VehicleInsurance.Core.dll
+C:\Users\yash\VehicleInsurance\VehicleInsurance.Core\obj\Debug\net10.0\VehicleInsurance.Core.sourcelink.json

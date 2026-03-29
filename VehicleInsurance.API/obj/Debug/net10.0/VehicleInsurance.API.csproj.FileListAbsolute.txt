@@ -164,3 +164,4 @@ C:\Users\yash\VehicleInsurance\VehicleInsurance.API\bin\Debug\net10.0\runtimes\w
 C:\Users\yash\VehicleInsurance\VehicleInsurance.API\bin\Debug\net10.0\Swashbuckle.AspNetCore.Swagger.dll
 C:\Users\yash\VehicleInsurance\VehicleInsurance.API\bin\Debug\net10.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 C:\Users\yash\VehicleInsurance\VehicleInsurance.API\bin\Debug\net10.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\Users\yash\VehicleInsurance\VehicleInsurance.API\obj\Debug\net10.0\VehicleInsurance.API.sourcelink.json
