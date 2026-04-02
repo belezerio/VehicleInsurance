@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\yash\\VehicleInsurance\\VehicleInsurance.Infrastructure\\VehicleInsurance.Infrastructure.csproj": {}
+    "C:\\Users\\yash\\Documents\\VehicleInsurance\\VehicleInsurance.Infrastructure\\VehicleInsurance.Infrastructure.csproj": {}
   },
   "projects": {
-    "C:\\Users\\yash\\VehicleInsurance\\VehicleInsurance.Core\\VehicleInsurance.Core.csproj": {
+    "C:\\Users\\yash\\Documents\\VehicleInsurance\\VehicleInsurance.Core\\VehicleInsurance.Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\yash\\VehicleInsurance\\VehicleInsurance.Core\\VehicleInsurance.Core.csproj",
+        "projectUniqueName": "C:\\Users\\yash\\Documents\\VehicleInsurance\\VehicleInsurance.Core\\VehicleInsurance.Core.csproj",
         "projectName": "VehicleInsurance.Core",
-        "projectPath": "C:\\Users\\yash\\VehicleInsurance\\VehicleInsurance.Core\\VehicleInsurance.Core.csproj",
+        "projectPath": "C:\\Users\\yash\\Documents\\VehicleInsurance\\VehicleInsurance.Core\\VehicleInsurance.Core.csproj",
         "packagesPath": "C:\\Users\\yash\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\yash\\VehicleInsurance\\VehicleInsurance.Core\\obj\\",
+        "outputPath": "C:\\Users\\yash\\Documents\\VehicleInsurance\\VehicleInsurance.Core\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -343,14 +343,14 @@
         }
       }
     },
-    "C:\\Users\\yash\\VehicleInsurance\\VehicleInsurance.Infrastructure\\VehicleInsurance.Infrastructure.csproj": {
+    "C:\\Users\\yash\\Documents\\VehicleInsurance\\VehicleInsurance.Infrastructure\\VehicleInsurance.Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\yash\\VehicleInsurance\\VehicleInsurance.Infrastructure\\VehicleInsurance.Infrastructure.csproj",
+        "projectUniqueName": "C:\\Users\\yash\\Documents\\VehicleInsurance\\VehicleInsurance.Infrastructure\\VehicleInsurance.Infrastructure.csproj",
         "projectName": "VehicleInsurance.Infrastructure",
-        "projectPath": "C:\\Users\\yash\\VehicleInsurance\\VehicleInsurance.Infrastructure\\VehicleInsurance.Infrastructure.csproj",
+        "projectPath": "C:\\Users\\yash\\Documents\\VehicleInsurance\\VehicleInsurance.Infrastructure\\VehicleInsurance.Infrastructure.csproj",
         "packagesPath": "C:\\Users\\yash\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\yash\\VehicleInsurance\\VehicleInsurance.Infrastructure\\obj\\",
+        "outputPath": "C:\\Users\\yash\\Documents\\VehicleInsurance\\VehicleInsurance.Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -371,8 +371,8 @@
           "net10.0": {
             "targetAlias": "net10.0",
             "projectReferences": {
-              "C:\\Users\\yash\\VehicleInsurance\\VehicleInsurance.Core\\VehicleInsurance.Core.csproj": {
-                "projectPath": "C:\\Users\\yash\\VehicleInsurance\\VehicleInsurance.Core\\VehicleInsurance.Core.csproj"
+              "C:\\Users\\yash\\Documents\\VehicleInsurance\\VehicleInsurance.Core\\VehicleInsurance.Core.csproj": {
+                "projectPath": "C:\\Users\\yash\\Documents\\VehicleInsurance\\VehicleInsurance.Core\\VehicleInsurance.Core.csproj"
               }
             }
           }

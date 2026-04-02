@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\yash\\VehicleInsurance\\VehicleInsurance.Core\\VehicleInsurance.Core.csproj",
+      "projectUniqueName": "C:\\Users\\yash\\Documents\\VehicleInsurance\\VehicleInsurance.Core\\VehicleInsurance.Core.csproj",
       "projectName": "VehicleInsurance.Core",
-      "projectPath": "C:\\Users\\yash\\VehicleInsurance\\VehicleInsurance.Core\\VehicleInsurance.Core.csproj",
+      "projectPath": "C:\\Users\\yash\\Documents\\VehicleInsurance\\VehicleInsurance.Core\\VehicleInsurance.Core.csproj",
       "packagesPath": "C:\\Users\\yash\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\yash\\VehicleInsurance\\VehicleInsurance.Core\\obj\\",
+      "outputPath": "C:\\Users\\yash\\Documents\\VehicleInsurance\\VehicleInsurance.Core\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

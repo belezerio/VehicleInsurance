@@ -2770,11 +2770,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\yash\\VehicleInsurance\\VehicleInsurance.Tests\\VehicleInsurance.Tests.csproj",
+      "projectUniqueName": "C:\\Users\\yash\\Documents\\VehicleInsurance\\VehicleInsurance.Tests\\VehicleInsurance.Tests.csproj",
       "projectName": "VehicleInsurance.Tests",
-      "projectPath": "C:\\Users\\yash\\VehicleInsurance\\VehicleInsurance.Tests\\VehicleInsurance.Tests.csproj",
+      "projectPath": "C:\\Users\\yash\\Documents\\VehicleInsurance\\VehicleInsurance.Tests\\VehicleInsurance.Tests.csproj",
       "packagesPath": "C:\\Users\\yash\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\yash\\VehicleInsurance\\VehicleInsurance.Tests\\obj\\",
+      "outputPath": "C:\\Users\\yash\\Documents\\VehicleInsurance\\VehicleInsurance.Tests\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -2795,11 +2795,11 @@
         "net10.0": {
           "targetAlias": "net10.0",
           "projectReferences": {
-            "C:\\Users\\yash\\VehicleInsurance\\VehicleInsurance.Core\\VehicleInsurance.Core.csproj": {
-              "projectPath": "C:\\Users\\yash\\VehicleInsurance\\VehicleInsurance.Core\\VehicleInsurance.Core.csproj"
+            "C:\\Users\\yash\\Documents\\VehicleInsurance\\VehicleInsurance.Core\\VehicleInsurance.Core.csproj": {
+              "projectPath": "C:\\Users\\yash\\Documents\\VehicleInsurance\\VehicleInsurance.Core\\VehicleInsurance.Core.csproj"
             },
-            "C:\\Users\\yash\\VehicleInsurance\\VehicleInsurance.Infrastructure\\VehicleInsurance.Infrastructure.csproj": {
-              "projectPath": "C:\\Users\\yash\\VehicleInsurance\\VehicleInsurance.Infrastructure\\VehicleInsurance.Infrastructure.csproj"
+            "C:\\Users\\yash\\Documents\\VehicleInsurance\\VehicleInsurance.Infrastructure\\VehicleInsurance.Infrastructure.csproj": {
+              "projectPath": "C:\\Users\\yash\\Documents\\VehicleInsurance\\VehicleInsurance.Infrastructure\\VehicleInsurance.Infrastructure.csproj"
             }
           }
         }
