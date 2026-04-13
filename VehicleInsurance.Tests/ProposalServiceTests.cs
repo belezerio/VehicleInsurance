@@ -1,5 +1,6 @@
 using FluentAssertions;
 using Moq;
+using NUnit.Framework;
 using VehicleInsurance.Core.DTOs;
 using VehicleInsurance.Core.Entities;
 using VehicleInsurance.Core.Interfaces;
@@ -7,20 +8,22 @@ using VehicleInsurance.Infrastructure.Services;
 
 namespace VehicleInsurance.Tests;
 
+[TestFixture]
 public class ProposalServiceTests
 {
-    private readonly Mock<IProposalRepository> _proposalRepoMock;
-    private readonly Mock<IPolicyRepository> _policyRepoMock;
-    private readonly ProposalService _service;
+    private Mock<IProposalRepository> _proposalRepoMock;
+    private Mock<IPolicyRepository> _policyRepoMock;
+    private ProposalService _service;
 
-    public ProposalServiceTests()
+    [SetUp]
+    public void SetUp()
     {
         _proposalRepoMock = new Mock<IProposalRepository>();
         _policyRepoMock = new Mock<IPolicyRepository>();
         _service = new ProposalService(_proposalRepoMock.Object, _policyRepoMock.Object);
     }
 
-    [Fact]
+    [Test]
     public async Task SubmitAsync_ValidProposal_ReturnsProposalResponse()
     {
         // Arrange
@@ -48,7 +51,7 @@ public class ProposalServiceTests
         result.VehicleNumber.Should().Be("GJ01AB1234");
     }
 
-    [Fact]
+    [Test]
     public async Task SubmitAsync_InvalidPolicy_ThrowsException()
     {
         _policyRepoMock.Setup(r => r.GetByIdAsync(99)).ReturnsAsync((Policy?)null);
@@ -60,7 +63,7 @@ public class ProposalServiceTests
             .WithMessage("Policy not found.");
     }
 
-    [Fact]
+    [Test]
     public async Task UpdateStatusAsync_InvalidProposal_ThrowsException()
     {
         _proposalRepoMock.Setup(r => r.GetByIdAsync(99)).ReturnsAsync((Proposal?)null);

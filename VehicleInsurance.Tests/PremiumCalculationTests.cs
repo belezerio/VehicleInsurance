@@ -1,19 +1,22 @@
 using FluentAssertions;
+using NUnit.Framework;
 using VehicleInsurance.Core.Entities;
 using VehicleInsurance.Infrastructure.Services;
 
 namespace VehicleInsurance.Tests;
 
+[TestFixture]
 public class PremiumCalculationTests
 {
-    private readonly PremiumCalculationService _service;
+    private PremiumCalculationService _service;
 
-    public PremiumCalculationTests()
+    [SetUp]
+    public void SetUp()
     {
         _service = new PremiumCalculationService();
     }
 
-    [Fact]
+    [Test]
     public void Calculate_NewCar_ReturnsBasePrice()
     {
         var policy = new Policy { BasePrice = 5000m };
@@ -28,7 +31,7 @@ public class PremiumCalculationTests
         result.Should().Be(5000m);
     }
 
-    [Fact]
+    [Test]
     public void Calculate_CarBetween3And7Years_Applies10PercentSurcharge()
     {
         var policy = new Policy { BasePrice = 5000m };
@@ -44,7 +47,7 @@ public class PremiumCalculationTests
         result.Should().Be(5500m);
     }
 
-    [Fact]
+    [Test]
     public void Calculate_CarOlderThan7Years_Applies20PercentSurcharge()
     {
         var policy = new Policy { BasePrice = 5000m };
@@ -60,7 +63,7 @@ public class PremiumCalculationTests
         result.Should().Be(6000m);
     }
 
-    [Fact]
+    [Test]
     public void Calculate_Motorcycle_Applies08Multiplier()
     {
         var policy = new Policy { BasePrice = 5000m };
@@ -76,7 +79,7 @@ public class PremiumCalculationTests
         result.Should().Be(4000m);
     }
 
-    [Fact]
+    [Test]
     public void Calculate_Truck_Applies15Multiplier()
     {
         var policy = new Policy { BasePrice = 5000m };
@@ -92,7 +95,7 @@ public class PremiumCalculationTests
         result.Should().Be(7500m);
     }
 
-    [Fact]
+    [Test]
     public void Calculate_CamperVan_Applies13Multiplier()
     {
         var policy = new Policy { BasePrice = 5000m };
@@ -108,7 +111,7 @@ public class PremiumCalculationTests
         result.Should().Be(6500m);
     }
 
-    [Fact]
+    [Test]
     public void Calculate_WithAddOns_AddsAddOnPrices()
     {
         var policy = new Policy { BasePrice = 5000m };
@@ -129,7 +132,7 @@ public class PremiumCalculationTests
         result.Should().Be(5800m);
     }
 
-    [Fact]
+    [Test]
     public void Calculate_OldTruckWithAddOns_AppliesAllRules()
     {
         var policy = new Policy { BasePrice = 5000m };
@@ -149,7 +152,7 @@ public class PremiumCalculationTests
         result.Should().Be(10000m);
     }
 
-    [Fact]
+    [Test]
     public void Calculate_ReturnsRoundedToTwoDecimalPlaces()
     {
         var policy = new Policy { BasePrice = 3333m };
@@ -165,7 +168,7 @@ public class PremiumCalculationTests
         result.Should().Be(2666.40m);
     }
 
-    [Fact]
+    [Test]
     public void Calculate_ZeroBasePrice_ReturnsZero()
     {
         var policy = new Policy { BasePrice = 0m };
