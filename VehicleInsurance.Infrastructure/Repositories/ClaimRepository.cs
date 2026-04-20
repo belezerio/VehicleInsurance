@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using VehicleInsurance.Core.Entities;
+using VehicleInsurance.Core.Helpers;
 using VehicleInsurance.Core.Interfaces;
 using VehicleInsurance.Infrastructure.Data;
 
@@ -22,11 +23,46 @@ public class ClaimRepository : IClaimRepository
             .Where(c => c.UserId == userId)
             .ToListAsync();
 
-    public async Task<IEnumerable<Claim>> GetAllAsync() =>
-        await _context.Claims
+    public async Task<PagedResult<Claim>> GetAllAsync(ClaimQueryParams queryParams)
+    {
+        var query = _context.Claims
             .Include(c => c.User)
             .Include(c => c.Proposal)
+            .AsQueryable();
+
+        // Filtering
+        if (!string.IsNullOrEmpty(queryParams.Status))
+            query = query.Where(c => c.Status == queryParams.Status);
+
+        // Sorting
+        query = queryParams.SortBy.ToLower() switch
+        {
+            "claimamount" => queryParams.SortOrder == "asc"
+                ? query.OrderBy(c => c.ClaimAmount)
+                : query.OrderByDescending(c => c.ClaimAmount),
+            "status" => queryParams.SortOrder == "asc"
+                ? query.OrderBy(c => c.Status)
+                : query.OrderByDescending(c => c.Status),
+            _ => queryParams.SortOrder == "asc"
+                ? query.OrderBy(c => c.FiledAt)
+                : query.OrderByDescending(c => c.FiledAt)
+        };
+
+        // Pagination
+        var totalCount = await query.CountAsync();
+        var data = await query
+            .Skip((queryParams.Page - 1) * queryParams.PageSize)
+            .Take(queryParams.PageSize)
             .ToListAsync();
+
+        return new PagedResult<Claim>
+        {
+            Data = data,
+            TotalCount = totalCount,
+            Page = queryParams.Page,
+            PageSize = queryParams.PageSize
+        };
+    }
 
     public async Task<Claim> AddAsync(Claim claim)
     {

@@ -499,3 +499,8 @@ C:\Users\yash\Documents\VehicleInsurance\VehicleInsurance.API\obj\Debug\net10.0\
 C:\Users\yash\Documents\VehicleInsurance\VehicleInsurance.API\obj\Debug\net10.0\VehicleInsurance.API.pdb
 C:\Users\yash\Documents\VehicleInsurance\VehicleInsurance.API\obj\Debug\net10.0\VehicleInsurance.API.genruntimeconfig.cache
 C:\Users\yash\Documents\VehicleInsurance\VehicleInsurance.API\obj\Debug\net10.0\ref\VehicleInsurance.API.dll
+C:\Users\yash\Documents\VehicleInsurance\VehicleInsurance.API\bin\Debug\net10.0\AutoMapper.dll
+C:\Users\yash\Documents\VehicleInsurance\VehicleInsurance.API\bin\Debug\net10.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+C:\Users\yash\Documents\VehicleInsurance\VehicleInsurance.API\bin\Debug\net10.0\FluentValidation.dll
+C:\Users\yash\Documents\VehicleInsurance\VehicleInsurance.API\bin\Debug\net10.0\FluentValidation.AspNetCore.dll
+C:\Users\yash\Documents\VehicleInsurance\VehicleInsurance.API\bin\Debug\net10.0\FluentValidation.DependencyInjectionExtensions.dll

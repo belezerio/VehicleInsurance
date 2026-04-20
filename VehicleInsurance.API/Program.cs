@@ -8,13 +8,18 @@ using VehicleInsurance.Core.Interfaces;
 using VehicleInsurance.Infrastructure.Data;
 using VehicleInsurance.Infrastructure.Repositories;
 using VehicleInsurance.Infrastructure.Services;
-
+using FluentValidation;
+using FluentValidation.AspNetCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Controllers
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-
+// AutoMapper
+builder.Services.AddAutoMapper(typeof(VehicleInsurance.Infrastructure.Mappings.MappingProfile));
+// FluentValidation
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidatorsFromAssemblyContaining<VehicleInsurance.API.Validators.RegisterDtoValidator>();
 // Swagger with JWT support
 builder.Services.AddSwaggerGen(c =>
 {

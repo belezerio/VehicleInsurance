@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VehicleInsurance.Core.DTOs;
+using VehicleInsurance.Core.Helpers;
 using VehicleInsurance.Core.Interfaces;
 
 namespace VehicleInsurance.API.Controllers;
@@ -45,9 +46,9 @@ public class ProposalsController : ControllerBase
 
     [HttpGet]
     [Authorize(Roles = "Officer")]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromQuery] ProposalQueryParams queryParams)
     {
-        var proposals = await _proposalService.GetAllAsync();
+        var proposals = await _proposalService.GetAllAsync(queryParams);
         return Ok(proposals);
     }
 

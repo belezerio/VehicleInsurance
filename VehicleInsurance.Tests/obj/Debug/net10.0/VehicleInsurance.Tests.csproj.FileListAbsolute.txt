@@ -390,3 +390,4 @@ C:\Users\yash\Documents\VehicleInsurance\VehicleInsurance.Tests\bin\Debug\net10.
 C:\Users\yash\Documents\VehicleInsurance\VehicleInsurance.Tests\bin\Debug\net10.0\zh-Hant\Microsoft.Testing.Extensions.MSBuild.resources.dll
 C:\Users\yash\Documents\VehicleInsurance\VehicleInsurance.Tests\obj\Debug\net10.0\VehicleInsurance.Tests.gentestingplatformentrypointinputcache.cache
 C:\Users\yash\Documents\VehicleInsurance\VehicleInsurance.Tests\obj\Debug\net10.0\VehicleInsurance.Tests.genautoregisteredextensionsinputcache.cache
+C:\Users\yash\Documents\VehicleInsurance\VehicleInsurance.Tests\bin\Debug\net10.0\AutoMapper.dll

@@ -1,5 +1,7 @@
+using AutoMapper;
 using VehicleInsurance.Core.DTOs;
 using VehicleInsurance.Core.Entities;
+using VehicleInsurance.Core.Helpers;
 using VehicleInsurance.Core.Interfaces;
 
 namespace VehicleInsurance.Infrastructure.Services;
@@ -8,11 +10,14 @@ public class ProposalService : IProposalService
 {
     private readonly IProposalRepository _proposalRepo;
     private readonly IPolicyRepository _policyRepo;
+    private readonly IMapper _mapper;
 
-    public ProposalService(IProposalRepository proposalRepo, IPolicyRepository policyRepo)
+    public ProposalService(IProposalRepository proposalRepo,
+        IPolicyRepository policyRepo, IMapper mapper)
     {
         _proposalRepo = proposalRepo;
         _policyRepo = policyRepo;
+        _mapper = mapper;
     }
 
     public async Task<ProposalResponseDto> SubmitAsync(int userId, ProposalSubmitDto dto)
@@ -36,19 +41,25 @@ public class ProposalService : IProposalService
         };
 
         await _proposalRepo.AddAsync(proposal);
-        return MapToDto(proposal);
+        return _mapper.Map<ProposalResponseDto>(proposal);
     }
 
     public async Task<IEnumerable<ProposalResponseDto>> GetUserProposalsAsync(int userId)
     {
         var proposals = await _proposalRepo.GetByUserIdAsync(userId);
-        return proposals.Select(MapToDto);
+        return _mapper.Map<IEnumerable<ProposalResponseDto>>(proposals);
     }
 
-    public async Task<IEnumerable<ProposalResponseDto>> GetAllAsync()
+    public async Task<PagedResult<ProposalResponseDto>> GetAllAsync(ProposalQueryParams queryParams)
     {
-        var proposals = await _proposalRepo.GetAllAsync();
-        return proposals.Select(MapToDto);
+        var result = await _proposalRepo.GetAllAsync(queryParams);
+        return new PagedResult<ProposalResponseDto>
+        {
+            Data = _mapper.Map<IEnumerable<ProposalResponseDto>>(result.Data),
+            TotalCount = result.TotalCount,
+            Page = result.Page,
+            PageSize = result.PageSize
+        };
     }
 
     public async Task UpdateStatusAsync(int proposalId, ProposalStatusUpdateDto dto)
@@ -62,26 +73,4 @@ public class ProposalService : IProposalService
 
         await _proposalRepo.UpdateAsync(proposal);
     }
-
-    private static ProposalResponseDto MapToDto(Proposal proposal) => new()
-    {
-        ProposalId = proposal.ProposalId,
-        UserId = proposal.UserId,
-        UserName = proposal.User?.FullName ?? string.Empty,
-        PolicyId = proposal.PolicyId,
-        PolicyName = proposal.Policy?.PolicyName ?? string.Empty,
-        VehicleNumber = proposal.VehicleNumber,
-        VehicleModel = proposal.VehicleModel,
-        VehicleYear = proposal.VehicleYear,
-        VehicleCategory = proposal.VehicleCategory,
-        Status = proposal.Status,
-        OfficerRemarks = proposal.OfficerRemarks,
-        SubmittedAt = proposal.SubmittedAt,
-        SelectedAddOns = proposal.ProposalAddOns?.Select(pa => new AddOnResponseDto
-        {
-            AddOnId = pa.AddOn?.AddOnId ?? 0,
-            AddOnName = pa.AddOn?.AddOnName ?? string.Empty,
-            AddOnPrice = pa.AddOn?.AddOnPrice ?? 0
-        }).ToList() ?? new()
-    };
 }

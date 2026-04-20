@@ -1,5 +1,7 @@
+using AutoMapper;
 using VehicleInsurance.Core.DTOs;
 using VehicleInsurance.Core.Entities;
+using VehicleInsurance.Core.Helpers;
 using VehicleInsurance.Core.Interfaces;
 
 namespace VehicleInsurance.Infrastructure.Services;
@@ -8,11 +10,14 @@ public class ClaimService : IClaimService
 {
     private readonly IClaimRepository _claimRepo;
     private readonly IProposalRepository _proposalRepo;
+    private readonly IMapper _mapper;
 
-    public ClaimService(IClaimRepository claimRepo, IProposalRepository proposalRepo)
+    public ClaimService(IClaimRepository claimRepo,
+        IProposalRepository proposalRepo, IMapper mapper)
     {
         _claimRepo = claimRepo;
         _proposalRepo = proposalRepo;
+        _mapper = mapper;
     }
 
     public async Task<ClaimResponseDto> FileClaimAsync(int userId, ClaimSubmitDto dto)
@@ -36,19 +41,25 @@ public class ClaimService : IClaimService
         };
 
         await _claimRepo.AddAsync(claim);
-        return MapToDto(claim);
+        return _mapper.Map<ClaimResponseDto>(claim);
     }
 
     public async Task<IEnumerable<ClaimResponseDto>> GetUserClaimsAsync(int userId)
     {
         var claims = await _claimRepo.GetByUserIdAsync(userId);
-        return claims.Select(MapToDto);
+        return _mapper.Map<IEnumerable<ClaimResponseDto>>(claims);
     }
 
-    public async Task<IEnumerable<ClaimResponseDto>> GetAllAsync()
+    public async Task<PagedResult<ClaimResponseDto>> GetAllAsync(ClaimQueryParams queryParams)
     {
-        var claims = await _claimRepo.GetAllAsync();
-        return claims.Select(MapToDto);
+        var result = await _claimRepo.GetAllAsync(queryParams);
+        return new PagedResult<ClaimResponseDto>
+        {
+            Data = _mapper.Map<IEnumerable<ClaimResponseDto>>(result.Data),
+            TotalCount = result.TotalCount,
+            Page = result.Page,
+            PageSize = result.PageSize
+        };
     }
 
     public async Task UpdateStatusAsync(int claimId, ClaimStatusUpdateDto dto)
@@ -62,17 +73,4 @@ public class ClaimService : IClaimService
 
         await _claimRepo.UpdateAsync(claim);
     }
-
-    private static ClaimResponseDto MapToDto(Claim claim) => new()
-    {
-        ClaimId = claim.ClaimId,
-        ProposalId = claim.ProposalId,
-        UserId = claim.UserId,
-        UserName = claim.User?.FullName ?? string.Empty,
-        ClaimDescription = claim.ClaimDescription,
-        ClaimAmount = claim.ClaimAmount,
-        Status = claim.Status,
-        OfficerRemarks = claim.OfficerRemarks,
-        FiledAt = claim.FiledAt
-    };
 }
