@@ -1,10 +1,12 @@
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { login } from '../api/auth';
 import { useAuth } from '../context/AuthContext';
+import { Box, Button, TextField, Typography, Paper, Container, Link } from '@mui/material';
+import { motion } from 'framer-motion';
 
 const schema = yup.object({
   email: yup.string().email('Invalid email').required('Email is required'),
@@ -34,44 +36,62 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md">
-        <h2 className="text-2xl font-bold text-blue-800 mb-6 text-center">Welcome Back</h2>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-            <input
-              {...register('email')}
-              type="email"
-              className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="you@example.com"
-            />
-            {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-            <input
-              {...register('password')}
-              type="password"
-              className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="••••••••"
-            />
-            {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>}
-          </div>
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full bg-blue-800 text-white py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
-          >
-            {isSubmitting ? 'Logging in...' : 'Login'}
-          </button>
-        </form>
-        <p className="text-center text-sm text-gray-500 mt-4">
-          Don't have an account?{' '}
-          <Link to="/register" className="text-blue-600 hover:underline">Register</Link>
-        </p>
-      </div>
-    </div>
+    <Box sx={{ minHeight: 'calc(100vh - 80px)', display: 'flex', alignItems: 'center', py: 8 }}>
+      <Container maxWidth="sm">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          <Paper sx={{ p: { xs: 4, md: 6 }, borderRadius: '24px' }}>
+            <Typography variant="h4" sx={{ fontWeight: 800, mb: 4, textAlign: 'center', background: 'linear-gradient(to right, #60a5fa, #a78bfa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+              Welcome Back
+            </Typography>
+            
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                <TextField
+                  fullWidth
+                  label="Email"
+                  variant="outlined"
+                  {...register('email')}
+                  error={!!errors.email}
+                  helperText={errors.email?.message}
+                />
+                
+                <TextField
+                  fullWidth
+                  label="Password"
+                  type="password"
+                  variant="outlined"
+                  {...register('password')}
+                  error={!!errors.password}
+                  helperText={errors.password?.message}
+                />
+                
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  size="large"
+                  disabled={isSubmitting}
+                  sx={{ mt: 2, py: 1.5, fontSize: '1.1rem' }}
+                >
+                  {isSubmitting ? 'Logging in...' : 'Login'}
+                </Button>
+              </Box>
+            </form>
+            
+            <Typography variant="body2" sx={{ mt: 4, textAlign: 'center', color: 'text.secondary' }}>
+              Don't have an account?{' '}
+              <Link component={RouterLink} to="/register" sx={{ color: 'primary.light', textDecoration: 'none', fontWeight: 600, '&:hover': { textDecoration: 'underline' } }}>
+                Register here
+              </Link>
+            </Typography>
+          </Paper>
+        </motion.div>
+      </Container>
+    </Box>
   );
 };
 

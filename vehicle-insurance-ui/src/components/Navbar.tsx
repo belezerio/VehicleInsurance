@@ -3,11 +3,13 @@ import { useAuth } from '../context/AuthContext';
 import { Shield, LayoutDashboard, FileText, Activity, LogOut, UserPlus, LogIn } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { soundManager } from '../utils/sound';
+import { AppBar, Toolbar, Button, Typography, Box, IconButton, useTheme, Container } from '@mui/material';
 
 const Navbar = () => {
   const { token, userRole, userName, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const theme = useTheme();
 
   const handleLogout = () => {
     soundManager.playClick();
@@ -17,95 +19,142 @@ const Navbar = () => {
 
   const isActive = (path: string) => location.pathname === path;
 
-  const NavLink = ({ to, icon: Icon, children }: { to: string, icon: any, children: React.ReactNode }) => (
-    <Link
-      to={to}
-      onMouseEnter={() => soundManager.playHover()}
-      onClick={() => soundManager.playClick()}
-      className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all duration-300 font-medium ${
-        isActive(to) 
-          ? 'bg-blue-600/10 text-blue-700 shadow-sm' 
-          : 'text-gray-600 hover:text-blue-600 hover:bg-gray-50'
-      }`}
-    >
-      <Icon size={18} />
-      <span>{children}</span>
-    </Link>
-  );
+  const NavLink = ({ to, icon: Icon, children }: { to: string, icon: any, children: React.ReactNode }) => {
+    const active = isActive(to);
+    return (
+      <Button
+        component={Link}
+        to={to}
+        onMouseEnter={() => soundManager.playHover()}
+        onClick={() => soundManager.playClick()}
+        startIcon={<Icon size={18} />}
+        sx={{
+          color: active ? theme.palette.primary.main : theme.palette.text.secondary,
+          backgroundColor: active ? 'rgba(59, 130, 246, 0.1)' : 'transparent',
+          borderRadius: '12px',
+          px: 2,
+          py: 1,
+          textTransform: 'none',
+          fontWeight: 600,
+          transition: 'all 0.3s ease',
+          '&:hover': {
+            backgroundColor: 'rgba(59, 130, 246, 0.05)',
+            color: theme.palette.primary.light,
+          }
+        }}
+      >
+        {children}
+      </Button>
+    );
+  };
 
   return (
-    <motion.nav 
+    <motion.div 
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-100 shadow-sm"
+      style={{ position: 'sticky', top: 0, zIndex: 1000 }}
     >
-      <div className="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
-        <Link to="/" onClick={() => soundManager.playClick()} onMouseEnter={() => soundManager.playHover()} className="flex items-center gap-3 group">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-lg group-hover:scale-105 transition-transform">
-            <Shield size={24} />
-          </div>
-          <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-900 to-indigo-800">
-            SecureDrive
-          </span>
-        </Link>
+      <AppBar 
+        position="static" 
+        elevation={0}
+        sx={{
+          background: 'rgba(15, 23, 42, 0.6)',
+          backdropFilter: 'blur(16px)',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+        }}
+      >
+        <Container maxWidth="lg">
+          <Toolbar disableGutters sx={{ height: 80, display: 'flex', justifyContent: 'space-between' }}>
+            <Box 
+              component={Link} 
+              to="/" 
+              onClick={() => soundManager.playClick()} 
+              onMouseEnter={() => soundManager.playHover()}
+              sx={{ display: 'flex', alignItems: 'center', gap: 1.5, textDecoration: 'none' }}
+            >
+              <Box 
+                sx={{
+                  width: 40, height: 40, borderRadius: '12px',
+                  background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  color: 'white', boxShadow: '0 4px 14px 0 rgba(59, 130, 246, 0.39)',
+                  transition: 'transform 0.3s ease',
+                  '&:hover': { transform: 'scale(1.05)' }
+                }}
+              >
+                <Shield size={24} />
+              </Box>
+              <Typography variant="h6" sx={{ fontWeight: 800, background: 'linear-gradient(to right, #60a5fa, #a78bfa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                SecureDrive
+              </Typography>
+            </Box>
 
-        <div className="hidden md:flex items-center gap-2">
-          {!token ? (
-            <div className="flex items-center gap-4">
-              <Link 
-                to="/login" 
-                onClick={() => soundManager.playClick()}
-                onMouseEnter={() => soundManager.playHover()}
-                className="flex items-center gap-2 text-gray-600 hover:text-blue-600 font-medium px-4 py-2 transition-colors"
-              >
-                <LogIn size={18} /> Login
-              </Link>
-              <Link
-                to="/register"
-                onClick={() => soundManager.playClick()}
-                onMouseEnter={() => soundManager.playHover()}
-                className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-2.5 rounded-xl font-medium hover:shadow-lg hover:shadow-blue-500/30 transition-all hover:-translate-y-0.5"
-              >
-                <UserPlus size={18} /> Register
-              </Link>
-            </div>
-          ) : (
-            <div className="flex items-center gap-6">
-              <div className="flex items-center gap-2">
-                {userRole === 'User' && (
-                  <>
-                    <NavLink to="/dashboard" icon={LayoutDashboard}>Dashboard</NavLink>
-                    <NavLink to="/my-proposals" icon={FileText}>Policies</NavLink>
-                    <NavLink to="/my-claims" icon={Activity}>Claims</NavLink>
-                  </>
-                )}
-                {userRole === 'Officer' && (
-                  <>
-                    <NavLink to="/officer" icon={LayoutDashboard}>Dashboard</NavLink>
-                    <NavLink to="/officer/proposals" icon={FileText}>Proposals</NavLink>
-                    <NavLink to="/officer/claims" icon={Activity}>Claims</NavLink>
-                  </>
-                )}
-              </div>
-              <div className="h-8 w-px bg-gray-200"></div>
-              <div className="flex items-center gap-4">
-                <div className="flex flex-col items-end">
-                  <span className="text-sm text-gray-500">Welcome back,</span>
-                  <span className="font-semibold text-gray-800">{userName}</span>
-                </div>
-                <button
-                  onClick={handleLogout}
-                  onMouseEnter={() => soundManager.playHover()}
-                  className="flex items-center gap-2 bg-red-50 text-red-600 px-4 py-2 rounded-xl hover:bg-red-100 transition-colors font-medium hover:shadow-sm"
-                >
-                  <LogOut size={18} />
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    </motion.nav>
+            <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 1 }}>
+              {!token ? (
+                <>
+                  <Button 
+                    component={Link} 
+                    to="/login"
+                    onClick={() => soundManager.playClick()}
+                    onMouseEnter={() => soundManager.playHover()}
+                    startIcon={<LogIn size={18} />}
+                    sx={{ color: theme.palette.text.secondary, textTransform: 'none', fontWeight: 600, '&:hover': { color: theme.palette.primary.light } }}
+                  >
+                    Login
+                  </Button>
+                  <Button 
+                    component={Link} 
+                    to="/register"
+                    variant="contained"
+                    onClick={() => soundManager.playClick()}
+                    onMouseEnter={() => soundManager.playHover()}
+                    startIcon={<UserPlus size={18} />}
+                  >
+                    Register
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Box sx={{ display: 'flex', gap: 0.5, mr: 2 }}>
+                    {userRole === 'User' && (
+                      <>
+                        <NavLink to="/dashboard" icon={LayoutDashboard}>Dashboard</NavLink>
+                        <NavLink to="/my-proposals" icon={FileText}>Policies</NavLink>
+                        <NavLink to="/my-claims" icon={Activity}>Claims</NavLink>
+                      </>
+                    )}
+                    {userRole === 'Officer' && (
+                      <>
+                        <NavLink to="/officer" icon={LayoutDashboard}>Dashboard</NavLink>
+                        <NavLink to="/officer/proposals" icon={FileText}>Proposals</NavLink>
+                        <NavLink to="/officer/claims" icon={Activity}>Claims</NavLink>
+                      </>
+                    )}
+                  </Box>
+                  <Box sx={{ width: '1px', height: 32, bgcolor: 'rgba(255,255,255,0.1)', mr: 2 }} />
+                  <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', mr: 2 }}>
+                    <Typography variant="caption" sx={{ color: theme.palette.text.secondary }}>Welcome back,</Typography>
+                    <Typography variant="body2" sx={{ fontWeight: 600, color: theme.palette.text.primary }}>{userName}</Typography>
+                  </Box>
+                  <IconButton 
+                    onClick={handleLogout}
+                    onMouseEnter={() => soundManager.playHover()}
+                    sx={{ 
+                      bgcolor: 'rgba(239, 68, 68, 0.1)', 
+                      color: '#ef4444', 
+                      borderRadius: '12px',
+                      '&:hover': { bgcolor: 'rgba(239, 68, 68, 0.2)' }
+                    }}
+                  >
+                    <LogOut size={20} />
+                  </IconButton>
+                </>
+              )}
+            </Box>
+          </Toolbar>
+        </Container>
+      </AppBar>
+    </motion.div>
   );
 };
 

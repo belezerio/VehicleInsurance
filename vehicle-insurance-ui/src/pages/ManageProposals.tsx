@@ -4,6 +4,8 @@ import { generateQuote } from '../api/quotes';
 import { toast } from 'react-toastify';
 import StatusBadge from '../components/StatusBadge';
 import type { Proposal } from '../types';
+import { Box, Button, TextField, Typography, Paper, Container, Grid, CircularProgress, Stack, Card, CardContent, Chip } from '@mui/material';
+import { motion } from 'framer-motion';
 
 const ManageProposals = () => {
   const [proposals, setProposals] = useState<Proposal[]>([]);
@@ -48,82 +50,120 @@ const ManageProposals = () => {
     }
   };
 
-  if (loading) return <div className="text-center py-20 text-blue-600">Loading...</div>;
+  if (loading) return (
+    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+      <CircularProgress size={60} thickness={4} />
+    </Box>
+  );
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-blue-800 mb-6">Manage Proposals</h1>
+    <Box sx={{ py: 8 }}>
+      <Container maxWidth="lg">
+        <Typography variant="h4" sx={{ fontWeight: 800, mb: 4, background: 'linear-gradient(to right, #60a5fa, #a78bfa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+          Manage Proposals
+        </Typography>
 
-      {proposals.length === 0 ? (
-        <div className="text-center py-20 text-gray-500">No proposals yet.</div>
-      ) : (
-        <div className="space-y-4">
-          {proposals.map(proposal => (
-            <div key={proposal.proposalId} className="bg-white rounded-xl shadow p-6">
-              <div className="flex justify-between items-start mb-3">
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-800">
-                    {proposal.policyName}
-                    <span className="text-sm font-normal text-gray-400 ml-2">
-                      #{proposal.proposalId}
-                    </span>
-                  </h3>
-                  <p className="text-gray-500 text-sm">
-                    Customer: {proposal.userName} • {proposal.vehicleModel} • {proposal.vehicleNumber}
-                  </p>
-                  <p className="text-gray-400 text-xs mt-1">
-                    Year: {proposal.vehicleYear} • Category: {proposal.vehicleCategory}
-                  </p>
-                </div>
-                <StatusBadge status={proposal.status} />
-              </div>
+        {proposals.length === 0 ? (
+          <Paper sx={{ p: 6, textAlign: 'center', borderRadius: '24px' }}>
+            <Typography variant="h6" color="text.secondary">No proposals yet.</Typography>
+          </Paper>
+        ) : (
+          <Stack spacing={3}>
+            {proposals.map((proposal, idx) => (
+              <motion.div
+                key={proposal.proposalId}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: idx * 0.1 }}
+              >
+                <Card sx={{ borderRadius: '16px' }}>
+                  <CardContent sx={{ p: 4 }}>
+                    <Grid container spacing={3}>
+                      <Grid size={{ xs: 12, sm: 8 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
+                          <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                            {proposal.policyName}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            #{proposal.proposalId}
+                          </Typography>
+                          <StatusBadge status={proposal.status} />
+                        </Box>
+                        
+                        <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                          Customer: {proposal.userName} • {proposal.vehicleModel} • {proposal.vehicleNumber}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 2 }}>
+                          Year: {proposal.vehicleYear} • Category: {proposal.vehicleCategory}
+                        </Typography>
 
-              {proposal.selectedAddOns.length > 0 && (
-                <div className="mb-3">
-                  <p className="text-xs text-gray-500 mb-1">Selected Add-ons:</p>
-                  <div className="flex gap-2 flex-wrap">
-                    {proposal.selectedAddOns.map(addon => (
-                      <span key={addon.addOnId} className="bg-blue-50 text-blue-700 text-xs px-2 py-1 rounded">
-                        {addon.addOnName} (+₹{addon.addOnPrice})
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
+                        {proposal.selectedAddOns.length > 0 && (
+                          <Box sx={{ mb: 2 }}>
+                            <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1 }}>
+                              Selected Add-ons:
+                            </Typography>
+                            <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                              {proposal.selectedAddOns.map(addon => (
+                                <Chip 
+                                  key={addon.addOnId} 
+                                  label={`${addon.addOnName} (+₹${addon.addOnPrice})`}
+                                  size="small"
+                                  color="primary"
+                                  variant="outlined"
+                                  sx={{ borderColor: 'rgba(59, 130, 246, 0.3)' }}
+                                />
+                              ))}
+                            </Box>
+                          </Box>
+                        )}
+                      </Grid>
 
-              {proposal.status === 'ProposalSubmitted' && (
-                <div className="mt-4 space-y-3">
-                  <textarea
-                    placeholder="Add remarks (optional)"
-                    value={remarks[proposal.proposalId] || ''}
-                    onChange={e => setRemarks(prev => ({
-                      ...prev,
-                      [proposal.proposalId]: e.target.value
-                    }))}
-                    className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    rows={2}
-                  />
-                  <div className="flex gap-3">
-                    <button
-                      onClick={() => handleGenerateQuote(proposal.proposalId)}
-                      className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm"
-                    >
-                      Generate Quote
-                    </button>
-                    <button
-                      onClick={() => handleStatusUpdate(proposal.proposalId, 'Rejected')}
-                      className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 text-sm"
-                    >
-                      Reject
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
+                      {proposal.status === 'ProposalSubmitted' && (
+                        <Grid size={{ xs: 12, sm: 4 }}>
+                          <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'flex-end', borderLeft: { sm: '1px solid rgba(255,255,255,0.1)' }, pl: { sm: 3 } }}>
+                            <TextField
+                              fullWidth
+                              multiline
+                              rows={2}
+                              label="Officer Remarks (optional)"
+                              variant="outlined"
+                              value={remarks[proposal.proposalId] || ''}
+                              onChange={e => setRemarks(prev => ({
+                                ...prev,
+                                [proposal.proposalId]: e.target.value
+                              }))}
+                              sx={{ mb: 2 }}
+                            />
+                            <Stack direction="row" spacing={2}>
+                              <Button
+                                variant="contained"
+                                color="primary"
+                                fullWidth
+                                onClick={() => handleGenerateQuote(proposal.proposalId)}
+                              >
+                                Generate Quote
+                              </Button>
+                              <Button
+                                variant="contained"
+                                color="error"
+                                fullWidth
+                                onClick={() => handleStatusUpdate(proposal.proposalId, 'Rejected')}
+                              >
+                                Reject
+                              </Button>
+                            </Stack>
+                          </Box>
+                        </Grid>
+                      )}
+                    </Grid>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </Stack>
+        )}
+      </Container>
+    </Box>
   );
 };
 

@@ -3,6 +3,8 @@ import { getAllClaims, updateClaimStatus } from '../api/claims';
 import { toast } from 'react-toastify';
 import StatusBadge from '../components/StatusBadge';
 import type { Claim } from '../types';
+import { Box, Button, TextField, Typography, Paper, Container, Grid, CircularProgress, Stack, Card, CardContent } from '@mui/material';
+import { motion } from 'framer-motion';
 
 const ManageClaims = () => {
   const [claims, setClaims] = useState<Claim[]>([]);
@@ -37,71 +39,107 @@ const ManageClaims = () => {
     }
   };
 
-  if (loading) return <div className="text-center py-20 text-blue-600">Loading...</div>;
+  if (loading) return (
+    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+      <CircularProgress size={60} thickness={4} />
+    </Box>
+  );
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-blue-800 mb-6">Manage Claims</h1>
+    <Box sx={{ py: 8 }}>
+      <Container maxWidth="lg">
+        <Typography variant="h4" sx={{ fontWeight: 800, mb: 4, background: 'linear-gradient(to right, #60a5fa, #a78bfa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+          Manage Claims
+        </Typography>
 
-      {claims.length === 0 ? (
-        <div className="text-center py-20 text-gray-500">No claims yet.</div>
-      ) : (
-        <div className="space-y-4">
-          {claims.map(claim => (
-            <div key={claim.claimId} className="bg-white rounded-xl shadow p-6">
-              <div className="flex justify-between items-start mb-3">
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-800">
-                    Claim #{claim.claimId}
-                    <span className="text-sm font-normal text-gray-400 ml-2">
-                      Policy #{claim.proposalId}
-                    </span>
-                  </h3>
-                  <p className="text-gray-500 text-sm">Customer: {claim.userName}</p>
-                  <p className="text-gray-600 text-sm mt-1">{claim.claimDescription}</p>
-                  <p className="text-blue-800 font-bold mt-1">
-                    ₹{claim.claimAmount.toLocaleString()}
-                  </p>
-                  <p className="text-gray-400 text-xs mt-1">
-                    Filed: {new Date(claim.filedAt).toLocaleDateString()}
-                  </p>
-                </div>
-                <StatusBadge status={claim.status} />
-              </div>
+        {claims.length === 0 ? (
+          <Paper sx={{ p: 6, textAlign: 'center', borderRadius: '24px' }}>
+            <Typography variant="h6" color="text.secondary">No claims yet.</Typography>
+          </Paper>
+        ) : (
+          <Stack spacing={3}>
+            {claims.map((claim, idx) => (
+              <motion.div
+                key={claim.claimId}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: idx * 0.1 }}
+              >
+                <Card sx={{ borderRadius: '16px' }}>
+                  <CardContent sx={{ p: 4 }}>
+                    <Grid container spacing={3}>
+                      <Grid size={{ xs: 12, sm: 8 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
+                          <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                            Claim #{claim.claimId}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            Policy #{claim.proposalId}
+                          </Typography>
+                          <StatusBadge status={claim.status} />
+                        </Box>
+                        
+                        <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                          Customer: {claim.userName}
+                        </Typography>
+                        <Typography variant="body1" sx={{ mb: 2 }}>
+                          {claim.claimDescription}
+                        </Typography>
+                        
+                        <Typography variant="h6" color="primary.light" sx={{ fontWeight: 700 }}>
+                          ₹{claim.claimAmount.toLocaleString()}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary">
+                          Filed: {new Date(claim.filedAt).toLocaleDateString()}
+                        </Typography>
+                      </Grid>
 
-              {claim.status === 'Filed' && (
-                <div className="mt-4 space-y-3">
-                  <textarea
-                    placeholder="Add remarks"
-                    value={remarks[claim.claimId] || ''}
-                    onChange={e => setRemarks(prev => ({
-                      ...prev,
-                      [claim.claimId]: e.target.value
-                    }))}
-                    className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    rows={2}
-                  />
-                  <div className="flex gap-3">
-                    <button
-                      onClick={() => handleStatusUpdate(claim.claimId, 'Approved')}
-                      className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 text-sm"
-                    >
-                      Approve
-                    </button>
-                    <button
-                      onClick={() => handleStatusUpdate(claim.claimId, 'Rejected')}
-                      className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 text-sm"
-                    >
-                      Reject
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
+                      {claim.status === 'Filed' && (
+                        <Grid size={{ xs: 12, sm: 4 }}>
+                          <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'flex-end', borderLeft: { sm: '1px solid rgba(255,255,255,0.1)' }, pl: { sm: 3 } }}>
+                            <TextField
+                              fullWidth
+                              multiline
+                              rows={2}
+                              label="Officer Remarks"
+                              variant="outlined"
+                              value={remarks[claim.claimId] || ''}
+                              onChange={e => setRemarks(prev => ({
+                                ...prev,
+                                [claim.claimId]: e.target.value
+                              }))}
+                              sx={{ mb: 2 }}
+                            />
+                            <Stack direction="row" spacing={2}>
+                              <Button
+                                variant="contained"
+                                color="success"
+                                fullWidth
+                                onClick={() => handleStatusUpdate(claim.claimId, 'Approved')}
+                              >
+                                Approve
+                              </Button>
+                              <Button
+                                variant="contained"
+                                color="error"
+                                fullWidth
+                                onClick={() => handleStatusUpdate(claim.claimId, 'Rejected')}
+                              >
+                                Reject
+                              </Button>
+                            </Stack>
+                          </Box>
+                        </Grid>
+                      )}
+                    </Grid>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </Stack>
+        )}
+      </Container>
+    </Box>
   );
 };
 

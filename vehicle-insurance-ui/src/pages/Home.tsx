@@ -7,6 +7,7 @@ import type { Policy, Stats } from '../types';
 import { motion } from 'framer-motion';
 import { ShieldCheck, Users, CheckCircle, ArrowRight, Check } from 'lucide-react';
 import { soundManager } from '../utils/sound';
+import { Box, Typography, Button, Container, Grid, Card, CardMedia, CardContent, CircularProgress, Chip, Stack } from '@mui/material';
 
 const CAR_IMAGES = [
   'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&q=80&w=800',
@@ -43,179 +44,199 @@ const Home = () => {
   }, []);
 
   if (loading) return (
-    <div className="flex justify-center items-center h-screen bg-slate-50">
-      <motion.div 
-        animate={{ rotate: 360 }}
-        transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-        className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full"
-      />
-    </div>
+    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+      <CircularProgress size={60} thickness={4} />
+    </Box>
   );
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-20">
+    <Box sx={{ pb: 10 }}>
       {/* Hero Section */}
-      <div className="relative h-[80vh] min-h-[600px] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 z-0">
+      <Box sx={{ position: 'relative', height: '80vh', minHeight: 600, display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
+        <Box sx={{ position: 'absolute', inset: 0, zIndex: 0 }}>
           <img 
             src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&q=80&w=2000" 
             alt="Luxury Car Background" 
-            className="w-full h-full object-cover zoom-animation"
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 via-slate-900/70 to-transparent"></div>
-        </div>
+          <Box sx={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.6), transparent)' }} />
+        </Box>
         
-        <div className="relative z-10 max-w-7xl mx-auto px-6 w-full pt-20 text-left">
+        <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 10, pt: 10 }}>
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="max-w-2xl"
+            style={{ maxWidth: '700px' }}
           >
-            <span className="inline-block py-1 px-3 rounded-full bg-blue-500/20 text-blue-300 backdrop-blur-sm font-medium tracking-wider text-sm mb-6 uppercase border border-blue-500/30 shadow-sm">
-              Premium Auto Coverage
-            </span>
-            <h1 className="text-5xl md:text-7xl font-extrabold text-white leading-tight mb-6 tracking-tight">
+            <Chip 
+              label="Premium Auto Coverage" 
+              sx={{ mb: 3, bgcolor: 'rgba(59, 130, 246, 0.2)', color: '#93c5fd', border: '1px solid rgba(59, 130, 246, 0.3)', backdropFilter: 'blur(4px)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1 }}
+            />
+            <Typography variant="h1" sx={{ fontSize: { xs: '3rem', md: '4.5rem' }, color: 'white', lineHeight: 1.1, mb: 3 }}>
               Protect Your Drive,<br/>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-300">
+              <span style={{ background: 'linear-gradient(to right, #60a5fa, #a78bfa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                 Secure Your Future.
               </span>
-            </h1>
-            <p className="text-lg md:text-xl text-slate-300 mb-10 leading-relaxed font-light">
+            </Typography>
+            <Typography variant="h6" sx={{ color: 'rgba(255, 255, 255, 0.7)', mb: 5, fontWeight: 400, lineHeight: 1.6 }}>
               Experience the next generation of vehicle insurance. Fast claims, comprehensive coverage, and 24/7 premium support tailored for modern drivers.
-            </p>
-            <div className="flex flex-wrap gap-4">
-              <button
-                  onClick={() => {
-                    soundManager.playClick();
-                    navigate(token ? '/dashboard' : '/register');
-                  }}
-                  onMouseEnter={() => soundManager.playHover()}
-                  className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-8 py-4 rounded-full font-semibold text-lg hover:shadow-lg hover:shadow-blue-500/40 transition-all hover:-translate-y-1 flex items-center gap-2"
-              >
-                  {token ? 'Go to Dashboard' : 'Get a Quote Now'} <ArrowRight size={20} />
-              </button>
-            </div>
+            </Typography>
+            <Button
+              onClick={() => {
+                soundManager.playClick();
+                navigate(token ? '/dashboard' : '/register');
+              }}
+              onMouseEnter={() => soundManager.playHover()}
+              variant="contained"
+              size="large"
+              endIcon={<ArrowRight />}
+              sx={{ py: 2, px: 4, fontSize: '1.2rem', borderRadius: '30px' }}
+            >
+              {token ? 'Go to Dashboard' : 'Get a Quote Now'}
+            </Button>
           </motion.div>
-        </div>
-      </div>
+        </Container>
+      </Box>
 
       {/* Stats Section */}
       {stats && (
-        <div className="max-w-7xl mx-auto px-6 -mt-16 relative z-20">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Container maxWidth="lg" sx={{ mt: -8, position: 'relative', zIndex: 20 }}>
+          <Grid container spacing={4}>
             {[
-              { icon: ShieldCheck, color: "text-blue-500", bg: "bg-blue-100/50", border: "border-blue-100", label: "Active Policies", value: stats.activePolicies },
-              { icon: CheckCircle, color: "text-emerald-500", bg: "bg-emerald-100/50", border: "border-emerald-100", label: "Claims Served", value: stats.claimsServed },
-              { icon: Users, color: "text-purple-500", bg: "bg-purple-100/50", border: "border-purple-100", label: "Happy Customers", value: stats.totalCustomers }
+              { icon: ShieldCheck, color: '#3b82f6', bg: 'rgba(59, 130, 246, 0.2)', label: "Active Policies", value: stats.activePolicies },
+              { icon: CheckCircle, color: '#10b981', bg: 'rgba(16, 185, 129, 0.2)', label: "Claims Served", value: stats.claimsServed },
+              { icon: Users, color: '#8b5cf6', bg: 'rgba(139, 92, 246, 0.2)', label: "Happy Customers", value: stats.totalCustomers }
             ].map((stat, idx) => (
-              <motion.div 
-                key={idx}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: idx * 0.1 }}
-                className={`bg-white/80 backdrop-blur-xl border ${stat.border} rounded-2xl p-8 flex items-center gap-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)]`}
-              >
-                <div className={`w-16 h-16 rounded-2xl ${stat.bg} ${stat.color} flex items-center justify-center shrink-0`}>
-                  <stat.icon size={32} />
-                </div>
-                <div>
-                  <div className="text-4xl font-extrabold text-slate-800">{stat.value.toLocaleString()}</div>
-                  <div className="text-slate-500 font-medium mt-1 uppercase tracking-wide text-sm">{stat.label}</div>
-                </div>
-              </motion.div>
+              <Grid size={{ xs: 12, md: 4 }} key={idx}>
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: idx * 0.1 }}
+                >
+                  <Card sx={{ p: 4, display: 'flex', alignItems: 'center', gap: 3, borderRadius: '24px' }}>
+                    <Box sx={{ width: 64, height: 64, borderRadius: '16px', bgcolor: stat.bg, color: stat.color, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <stat.icon size={32} />
+                    </Box>
+                    <Box>
+                      <Typography variant="h3" sx={{ fontWeight: 800, color: 'text.primary' }}>
+                        {stat.value.toLocaleString()}
+                      </Typography>
+                      <Typography variant="overline" sx={{ color: 'text.secondary', fontWeight: 600, letterSpacing: 1 }}>
+                        {stat.label}
+                      </Typography>
+                    </Box>
+                  </Card>
+                </motion.div>
+              </Grid>
             ))}
-          </div>
-        </div>
+          </Grid>
+        </Container>
       )}
 
       {/* Policies Section */}
-      <div className="max-w-7xl mx-auto px-6 mt-32">
-        <div className="text-center mb-16">
-          <motion.h2 
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="text-4xl font-bold text-slate-900 mb-4 tracking-tight"
-          >
-            Curated Insurance Plans
-          </motion.h2>
-          <p className="text-slate-500 max-w-2xl mx-auto text-lg">
-            Choose from our premium selection of coverage options designed to provide maximum protection and peace of mind on the road.
-          </p>
-        </div>
+      <Container maxWidth="lg" sx={{ mt: 12 }}>
+        <Box sx={{ textAlign: 'center', mb: 8 }}>
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
+            <Typography variant="h2" sx={{ fontWeight: 800, mb: 2 }}>
+              Curated Insurance Plans
+            </Typography>
+            <Typography variant="h6" sx={{ color: 'text.secondary', maxWidth: 800, mx: 'auto', fontWeight: 400 }}>
+              Choose from our premium selection of coverage options designed to provide maximum protection and peace of mind on the road.
+            </Typography>
+          </motion.div>
+        </Box>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <Grid container spacing={4}>
           {policies.map((policy, idx) => {
             const image = CAR_IMAGES[idx % CAR_IMAGES.length];
             return (
-              <motion.div 
-                key={policy.policyId} 
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: idx * 0.1 }}
-                whileHover={{ y: -10 }}
-                className="bg-white rounded-3xl overflow-hidden shadow-[0_10px_40px_rgb(0,0,0,0.06)] border border-slate-100 flex flex-col group cursor-pointer"
-              >
-                <div className="relative h-56 overflow-hidden">
-                  <div className="absolute inset-0 bg-slate-900/20 group-hover:bg-transparent transition-colors z-10 duration-500"></div>
-                  <img 
-                    src={image} 
-                    alt={policy.policyName}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                  />
-                  <div className="absolute top-4 right-4 z-20 bg-white/90 backdrop-blur px-4 py-1.5 rounded-full text-xs font-bold text-slate-800 uppercase tracking-wider shadow-sm">
-                    {policy.vehicleCategory}
-                  </div>
-                </div>
-                
-                <div className="p-8 flex-1 flex flex-col">
-                  <h3 className="text-2xl font-bold text-slate-900 mb-3 group-hover:text-blue-600 transition-colors">
-                    {policy.policyName}
-                  </h3>
-                  <p className="text-slate-500 text-sm mb-6 leading-relaxed flex-1">
-                    {policy.description}
-                  </p>
-                  
-                  <div className="flex items-end gap-2 mb-6 bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                    <span className="text-4xl font-extrabold text-blue-600">₹{policy.basePrice.toLocaleString()}</span>
-                    <span className="text-slate-500 font-medium pb-1">/year</span>
-                  </div>
+              <Grid size={{ xs: 12, md: 4 }} key={policy.policyId}>
+                <motion.div 
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: idx * 0.1 }}
+                  whileHover={{ y: -10 }}
+                  style={{ height: '100%' }}
+                >
+                  <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', borderRadius: '24px', '&:hover': { '& .MuiCardMedia-root': { transform: 'scale(1.1)' } } }}>
+                    <Box sx={{ position: 'relative', height: 220, overflow: 'hidden' }}>
+                      <CardMedia
+                        component="img"
+                        image={image}
+                        alt={policy.policyName}
+                        sx={{ height: '100%', transition: 'transform 0.7s ease' }}
+                      />
+                      <Box sx={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(15, 23, 42, 0.8), transparent)' }} />
+                      <Chip 
+                        label={policy.vehicleCategory} 
+                        size="small"
+                        sx={{ position: 'absolute', top: 16, right: 16, bgcolor: 'rgba(255, 255, 255, 0.9)', color: '#0f172a', fontWeight: 800 }}
+                      />
+                    </Box>
+                    
+                    <CardContent sx={{ p: 4, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+                      <Typography variant="h5" sx={{ fontWeight: 800, mb: 1.5 }}>
+                        {policy.policyName}
+                      </Typography>
+                      <Typography variant="body2" sx={{ color: 'text.secondary', mb: 3, flexGrow: 1, lineHeight: 1.6 }}>
+                        {policy.description}
+                      </Typography>
+                      
+                      <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1, mb: 3, p: 2, bgcolor: 'rgba(0,0,0,0.2)', borderRadius: '16px' }}>
+                        <Typography variant="h4" sx={{ fontWeight: 800, color: 'primary.light' }}>
+                          ₹{policy.basePrice.toLocaleString()}
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 600 }}>
+                          /year
+                        </Typography>
+                      </Box>
 
-                  {policy.addOns.length > 0 && (
-                    <div className="mb-8">
-                      <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Popular Add-ons</p>
-                      <ul className="space-y-2">
-                        {policy.addOns.map(addon => (
-                          <li key={addon.addOnId} className="flex items-start gap-2 text-sm">
-                            <Check className="text-emerald-500 shrink-0 mt-0.5" size={16} />
-                            <span className="text-slate-600 flex-1">{addon.addOnName}</span>
-                            <span className="font-semibold text-slate-800">+₹{addon.addOnPrice}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
+                      {policy.addOns.length > 0 && (
+                        <Box sx={{ mb: 4 }}>
+                          <Typography variant="overline" sx={{ fontWeight: 700, color: 'text.secondary', display: 'block', mb: 1 }}>
+                            Popular Add-ons
+                          </Typography>
+                          <Stack spacing={1}>
+                            {policy.addOns.map(addon => (
+                              <Box key={addon.addOnId} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                <Check size={16} color="#10b981" />
+                                <Typography variant="body2" sx={{ flexGrow: 1, color: 'text.secondary' }}>
+                                  {addon.addOnName}
+                                </Typography>
+                                <Typography variant="body2" sx={{ fontWeight: 700 }}>
+                                  +₹{addon.addOnPrice}
+                                </Typography>
+                              </Box>
+                            ))}
+                          </Stack>
+                        </Box>
+                      )}
 
-                  <button
-                      onClick={() => {
-                        soundManager.playClick();
-                        navigate(token ? '/submit-proposal' : '/register');
-                      }}
-                      onMouseEnter={() => soundManager.playHover()}
-                      className="w-full bg-slate-900 text-white py-4 rounded-xl font-semibold hover:bg-blue-600 transition-colors mt-auto flex items-center justify-center gap-2 group/btn"
-                  >
-                      Apply for Coverage <ArrowRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
-                  </button>
-                </div>
-              </motion.div>
+                      <Button
+                        onClick={() => {
+                          soundManager.playClick();
+                          navigate(token ? '/submit-proposal' : '/register');
+                        }}
+                        onMouseEnter={() => soundManager.playHover()}
+                        variant="contained"
+                        fullWidth
+                        endIcon={<ArrowRight />}
+                        sx={{ mt: 'auto', py: 1.5, borderRadius: '12px' }}
+                      >
+                        Apply for Coverage
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              </Grid>
             )
           })}
-        </div>
-      </div>
-    </div>
+        </Grid>
+      </Container>
+    </Box>
   );
 };
 

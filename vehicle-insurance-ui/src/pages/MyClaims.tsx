@@ -5,6 +5,8 @@ import { getMyProposals } from '../api/proposals';
 import { toast } from 'react-toastify';
 import StatusBadge from '../components/StatusBadge';
 import type { Claim, Proposal } from '../types';
+import { Box, Button, TextField, Typography, Paper, Container, CircularProgress, Stack, Card, CardContent, FormControl, InputLabel, Select, MenuItem, Grid } from '@mui/material';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const MyClaims = () => {
   const [claims, setClaims] = useState<Claim[]>([]);
@@ -12,7 +14,7 @@ const MyClaims = () => {
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const { register, handleSubmit, reset, formState: { isSubmitting } } = useForm();
+  const { register, handleSubmit, reset, formState: { isSubmitting }, setValue } = useForm();
 
   useEffect(() => {
     fetchData();
@@ -49,91 +51,158 @@ const MyClaims = () => {
     }
   };
 
-  if (loading) return <div className="text-center py-20 text-blue-600">Loading...</div>;
+  if (loading) return (
+    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+      <CircularProgress size={60} thickness={4} />
+    </Box>
+  );
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-blue-800">My Claims</h1>
-        {activeProposals.length > 0 && (
-          <button
-            onClick={() => setShowForm(!showForm)}
-            className="bg-blue-800 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-          >
-            {showForm ? 'Cancel' : '+ File Claim'}
-          </button>
+    <Box sx={{ py: 8 }}>
+      <Container maxWidth="lg">
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 6 }}>
+          <Typography variant="h4" sx={{ fontWeight: 800, background: 'linear-gradient(to right, #60a5fa, #a78bfa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            My Claims
+          </Typography>
+          {activeProposals.length > 0 && (
+            <Button
+              variant={showForm ? 'outlined' : 'contained'}
+              color={showForm ? 'error' : 'primary'}
+              onClick={() => setShowForm(!showForm)}
+              sx={{ borderRadius: '12px' }}
+            >
+              {showForm ? 'Cancel' : '+ File Claim'}
+            </Button>
+          )}
+        </Box>
+
+        <AnimatePresence>
+          {showForm && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+              style={{ overflow: 'hidden' }}
+            >
+              <Paper sx={{ p: 4, mb: 6, borderRadius: '24px' }}>
+                <Typography variant="h6" sx={{ fontWeight: 700, mb: 3 }}>
+                  File a New Claim
+                </Typography>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                  <Grid container spacing={3}>
+                    <Grid size={{ xs: 12 }}>
+                      <FormControl fullWidth variant="outlined">
+                        <InputLabel id="policy-label">Select Policy</InputLabel>
+                        <Select
+                          labelId="policy-label"
+                          label="Select Policy"
+                          defaultValue=""
+                          {...register('proposalId', { required: true })}
+                          onChange={(e) => setValue('proposalId', e.target.value)}
+                        >
+                          <MenuItem value="" disabled>-- Select active policy --</MenuItem>
+                          {activeProposals.map(p => (
+                            <MenuItem key={p.proposalId} value={p.proposalId}>
+                              {p.policyName} - {p.vehicleNumber}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                    <Grid size={{ xs: 12 }}>
+                      <TextField
+                        fullWidth
+                        multiline
+                        rows={3}
+                        label="Claim Description"
+                        variant="outlined"
+                        placeholder="Describe the incident..."
+                        {...register('claimDescription', { required: true })}
+                      />
+                    </Grid>
+                    <Grid size={{ xs: 12, sm: 6 }}>
+                      <TextField
+                        fullWidth
+                        type="number"
+                        label="Claim Amount (₹)"
+                        variant="outlined"
+                        slotProps={{ htmlInput: { min: 0 } }}
+                        placeholder="15000"
+                        {...register('claimAmount', { required: true })}
+                      />
+                    </Grid>
+                    <Grid size={{ xs: 12, sm: 6 }} sx={{ display: 'flex', alignItems: 'center' }}>
+                      <Button
+                        type="submit"
+                        variant="contained"
+                        color="primary"
+                        fullWidth
+                        size="large"
+                        disabled={isSubmitting}
+                        sx={{ height: '56px' }}
+                      >
+                        {isSubmitting ? 'Filing...' : 'Submit Claim'}
+                      </Button>
+                    </Grid>
+                  </Grid>
+                </form>
+              </Paper>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {claims.length === 0 ? (
+          <Paper sx={{ p: 6, textAlign: 'center', borderRadius: '24px' }}>
+            <Typography variant="h1" sx={{ mb: 2 }}>📝</Typography>
+            <Typography variant="h6" color="text.secondary">No claims filed yet.</Typography>
+          </Paper>
+        ) : (
+          <Stack spacing={3}>
+            {claims.map((claim, idx) => (
+              <motion.div
+                key={claim.claimId}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: idx * 0.1 }}
+              >
+                <Card sx={{ borderRadius: '16px' }}>
+                  <CardContent sx={{ p: 3 }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+                      <Box>
+                        <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                          Claim #{claim.claimId}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary">
+                          Filed: {new Date(claim.filedAt).toLocaleDateString()}
+                        </Typography>
+                      </Box>
+                      <StatusBadge status={claim.status} />
+                    </Box>
+                    
+                    <Typography variant="body1" sx={{ mb: 2, color: 'text.secondary' }}>
+                      {claim.claimDescription}
+                    </Typography>
+                    
+                    <Typography variant="h5" color="primary.light" sx={{ fontWeight: 700, mb: 2 }}>
+                      ₹{claim.claimAmount.toLocaleString()}
+                    </Typography>
+
+                    {claim.officerRemarks && (
+                      <Box sx={{ p: 2, bgcolor: 'rgba(255, 255, 255, 0.05)', borderRadius: '12px' }}>
+                        <Typography variant="body2">
+                          <span style={{ fontWeight: 600 }}>Remarks:</span> {claim.officerRemarks}
+                        </Typography>
+                      </Box>
+                    )}
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </Stack>
         )}
-      </div>
-
-      {showForm && (
-        <div className="bg-white rounded-xl shadow p-6 mb-6">
-          <h2 className="text-lg font-semibold mb-4">File a New Claim</h2>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Select Policy</label>
-              <select {...register('proposalId', { required: true })}
-                className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="">-- Select active policy --</option>
-                {activeProposals.map(p => (
-                  <option key={p.proposalId} value={p.proposalId}>
-                    {p.policyName} - {p.vehicleNumber}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Claim Description</label>
-              <textarea {...register('claimDescription', { required: true })}
-                className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                rows={3} placeholder="Describe the incident..." />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Claim Amount (₹)</label>
-              <input {...register('claimAmount', { required: true })}
-                type="number" min="0"
-                className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="15000" />
-            </div>
-            <button type="submit" disabled={isSubmitting}
-              className="w-full bg-blue-800 text-white py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50">
-              {isSubmitting ? 'Filing...' : 'Submit Claim'}
-            </button>
-          </form>
-        </div>
-      )}
-
-      {claims.length === 0 ? (
-        <div className="text-center py-20 text-gray-500">
-          <div className="text-5xl mb-4">📝</div>
-          <p>No claims filed yet.</p>
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {claims.map(claim => (
-            <div key={claim.claimId} className="bg-white rounded-xl shadow p-6">
-              <div className="flex justify-between items-start">
-                <div>
-                  <p className="font-semibold text-gray-800">Claim #{claim.claimId}</p>
-                  <p className="text-gray-500 text-sm mt-1">{claim.claimDescription}</p>
-                  <p className="text-blue-800 font-bold mt-2">₹{claim.claimAmount.toLocaleString()}</p>
-                  <p className="text-gray-400 text-xs mt-1">
-                    Filed: {new Date(claim.filedAt).toLocaleDateString()}
-                  </p>
-                </div>
-                <StatusBadge status={claim.status} />
-              </div>
-              {claim.officerRemarks && (
-                <div className="mt-3 bg-gray-50 rounded-lg p-3">
-                  <p className="text-sm text-gray-600">
-                    <span className="font-semibold">Remarks:</span> {claim.officerRemarks}
-                  </p>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
+      </Container>
+    </Box>
   );
 };
 

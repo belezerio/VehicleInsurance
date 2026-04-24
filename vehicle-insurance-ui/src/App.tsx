@@ -14,7 +14,7 @@ import ManageClaims from './pages/ManageClaims';
 
 function App() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <>
       <Navbar />
       <Routes>
         {/* Public routes */}
@@ -37,7 +37,7 @@ function App() {
           <Route path="/officer/claims" element={<ManageClaims />} />
         </Route>
       </Routes>
-    </div>
+    </>
   );
 }
 

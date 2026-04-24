@@ -1,10 +1,12 @@
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { register as registerApi } from '../api/auth';
 import { useAuth } from '../context/AuthContext';
+import { Box, Button, TextField, Typography, Paper, Container, Link, Grid } from '@mui/material';
+import { motion } from 'framer-motion';
 
 const schema = yup.object({
   fullName: yup.string().required('Full name is required'),
@@ -38,72 +40,124 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-8">
-      <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-lg">
-        <h2 className="text-2xl font-bold text-blue-800 mb-6 text-center">Create Account</h2>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-            <input {...register('fullName')}
-              className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Yash Shah" />
-            {errors.fullName && <p className="text-red-500 text-xs mt-1">{errors.fullName.message}</p>}
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-            <input {...register('email')} type="email"
-              className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="you@example.com" />
-            {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-            <input {...register('password')} type="password"
-              className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="••••••••" />
-            {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>}
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Date of Birth</label>
-            <input {...register('dateOfBirth')} type="date"
-              className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            {errors.dateOfBirth && <p className="text-red-500 text-xs mt-1">{errors.dateOfBirth.message}</p>}
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Aadhaar Number</label>
-            <input {...register('aadhaarNumber')}
-              className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="123456789012" maxLength={12} />
-            {errors.aadhaarNumber && <p className="text-red-500 text-xs mt-1">{errors.aadhaarNumber.message}</p>}
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">PAN Number</label>
-            <input {...register('panNumber')}
-              className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="ABCDE1234F" maxLength={10} />
-            {errors.panNumber && <p className="text-red-500 text-xs mt-1">{errors.panNumber.message}</p>}
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
-            <textarea {...register('address')}
-              className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Your full address" rows={2} />
-            {errors.address && <p className="text-red-500 text-xs mt-1">{errors.address.message}</p>}
-          </div>
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full bg-blue-800 text-white py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
-          >
-            {isSubmitting ? 'Registering...' : 'Create Account'}
-          </button>
-        </form>
-        <p className="text-center text-sm text-gray-500 mt-4">
-          Already have an account?{' '}
-          <Link to="/login" className="text-blue-600 hover:underline">Login</Link>
-        </p>
-      </div>
-    </div>
+    <Box sx={{ minHeight: 'calc(100vh - 80px)', display: 'flex', alignItems: 'center', py: 8 }}>
+      <Container maxWidth="md">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          <Paper sx={{ p: { xs: 4, md: 6 }, borderRadius: '24px' }}>
+            <Typography variant="h4" sx={{ fontWeight: 800, mb: 4, textAlign: 'center', background: 'linear-gradient(to right, #60a5fa, #a78bfa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+              Create Account
+            </Typography>
+            
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <Grid container spacing={3}>
+                <Grid size={{ xs: 12, sm: 6 }}>
+                  <TextField
+                    fullWidth
+                    label="Full Name"
+                    variant="outlined"
+                    {...register('fullName')}
+                    error={!!errors.fullName}
+                    helperText={errors.fullName?.message}
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, sm: 6 }}>
+                  <TextField
+                    fullWidth
+                    label="Email"
+                    type="email"
+                    variant="outlined"
+                    {...register('email')}
+                    error={!!errors.email}
+                    helperText={errors.email?.message}
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, sm: 6 }}>
+                  <TextField
+                    fullWidth
+                    label="Password"
+                    type="password"
+                    variant="outlined"
+                    {...register('password')}
+                    error={!!errors.password}
+                    helperText={errors.password?.message}
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, sm: 6 }}>
+                  <TextField
+                    fullWidth
+                    label="Date of Birth"
+                    type="date"
+                    variant="outlined"
+                    slotProps={{ inputLabel: { shrink: true } }}
+                    {...register('dateOfBirth')}
+                    error={!!errors.dateOfBirth}
+                    helperText={errors.dateOfBirth?.message}
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, sm: 6 }}>
+                  <TextField
+                    fullWidth
+                    label="Aadhaar Number"
+                    variant="outlined"
+                    slotProps={{ htmlInput: { maxLength: 12 } }}
+                    {...register('aadhaarNumber')}
+                    error={!!errors.aadhaarNumber}
+                    helperText={errors.aadhaarNumber?.message}
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, sm: 6 }}>
+                  <TextField
+                    fullWidth
+                    label="PAN Number"
+                    variant="outlined"
+                    slotProps={{ htmlInput: { maxLength: 10 } }}
+                    {...register('panNumber')}
+                    error={!!errors.panNumber}
+                    helperText={errors.panNumber?.message}
+                  />
+                </Grid>
+                <Grid size={{ xs: 12 }}>
+                  <TextField
+                    fullWidth
+                    label="Address"
+                    variant="outlined"
+                    multiline
+                    rows={2}
+                    {...register('address')}
+                    error={!!errors.address}
+                    helperText={errors.address?.message}
+                  />
+                </Grid>
+                <Grid size={{ xs: 12 }}>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    size="large"
+                    fullWidth
+                    disabled={isSubmitting}
+                    sx={{ mt: 2, py: 1.5, fontSize: '1.1rem' }}
+                  >
+                    {isSubmitting ? 'Registering...' : 'Create Account'}
+                  </Button>
+                </Grid>
+              </Grid>
+            </form>
+            
+            <Typography variant="body2" sx={{ mt: 4, textAlign: 'center', color: 'text.secondary' }}>
+              Already have an account?{' '}
+              <Link component={RouterLink} to="/login" sx={{ color: 'primary.light', textDecoration: 'none', fontWeight: 600, '&:hover': { textDecoration: 'underline' } }}>
+                Login here
+              </Link>
+            </Typography>
+          </Paper>
+        </motion.div>
+      </Container>
+    </Box>
   );
 };
 
