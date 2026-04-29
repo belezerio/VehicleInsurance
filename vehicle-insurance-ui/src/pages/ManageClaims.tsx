@@ -18,7 +18,8 @@ const ManageClaims = () => {
   const fetchClaims = async () => {
     try {
       const res = await getAllClaims();
-      setClaims(res.data);
+      const result = res.data;
+      setClaims(Array.isArray(result) ? result : Array.isArray(result.data) ? result.data : []);
     } catch {
       toast.error('Failed to load claims');
     } finally {

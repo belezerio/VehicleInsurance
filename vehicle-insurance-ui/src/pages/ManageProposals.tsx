@@ -19,7 +19,8 @@ const ManageProposals = () => {
   const fetchProposals = async () => {
     try {
       const res = await getAllProposals();
-      setProposals(res.data);
+      const result = res.data;
+      setProposals(Array.isArray(result) ? result : Array.isArray(result.data) ? result.data : []);
     } catch {
       toast.error('Failed to load proposals');
     } finally {

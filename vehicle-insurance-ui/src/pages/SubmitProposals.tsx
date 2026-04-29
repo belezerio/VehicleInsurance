@@ -18,7 +18,7 @@ const SubmitProposal = () => {
   const watchedPolicyId = watch('policyId');
 
   useEffect(() => {
-    getAllPolicies().then(res => setPolicies(res.data));
+    getAllPolicies().then(res => setPolicies(Array.isArray(res.data) ? res.data : []));
   }, []);
 
   useEffect(() => {

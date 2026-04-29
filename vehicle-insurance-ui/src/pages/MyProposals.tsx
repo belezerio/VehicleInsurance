@@ -22,8 +22,9 @@ const MyProposals = () => {
   const fetchProposals = async () => {
     try {
       const res = await getMyProposals();
-      setProposals(res.data);
-      for (const proposal of res.data) {
+      const proposalsData = Array.isArray(res.data) ? res.data : [];
+      setProposals(proposalsData);
+      for (const proposal of proposalsData) {
         if (proposal.status === 'QuoteGenerated') {
           try {
             const quoteRes = await getQuoteByProposalId(proposal.proposalId);

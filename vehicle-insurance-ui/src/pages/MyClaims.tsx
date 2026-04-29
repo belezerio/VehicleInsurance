@@ -26,8 +26,9 @@ const MyClaims = () => {
         getMyClaims(),
         getMyProposals()
       ]);
-      setClaims(claimsRes.data);
-      setActiveProposals(proposalsRes.data.filter((p: Proposal) => p.status === 'Active'));
+      setClaims(Array.isArray(claimsRes.data) ? claimsRes.data : []);
+      const proposals = Array.isArray(proposalsRes.data) ? proposalsRes.data : [];
+      setActiveProposals(proposals.filter((p: Proposal) => p.status === 'Active'));
     } catch {
       toast.error('Failed to load claims');
     } finally {
