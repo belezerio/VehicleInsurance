@@ -1,4 +1,5 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
 import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
 import Home from './pages/Home';
@@ -13,30 +14,37 @@ import ManageProposals from './pages/ManageProposals';
 import ManageClaims from './pages/ManageClaims';
 
 function App() {
+  const location = useLocation();
+
+  // Hide navbar on auth pages
+  const hideNavbar = ['/login', '/register'].includes(location.pathname);
+
   return (
     <>
-      <Navbar />
-      <Routes>
-        {/* Public routes */}
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+      {!hideNavbar && <Navbar />}
+      <AnimatePresence mode="wait">
+        <Routes location={location} key={location.pathname}>
+          {/* Public routes */}
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
 
-        {/* User only routes */}
-        <Route element={<ProtectedRoute allowedRoles={['User']} />}>
-          <Route path="/dashboard" element={<UserDashboard />} />
-          <Route path="/my-proposals" element={<MyProposals />} />
-          <Route path="/submit-proposal" element={<SubmitProposal />} />
-          <Route path="/my-claims" element={<MyClaims />} />
-        </Route>
+          {/* User only routes */}
+          <Route element={<ProtectedRoute allowedRoles={['User']} />}>
+            <Route path="/dashboard" element={<UserDashboard />} />
+            <Route path="/my-proposals" element={<MyProposals />} />
+            <Route path="/submit-proposal" element={<SubmitProposal />} />
+            <Route path="/my-claims" element={<MyClaims />} />
+          </Route>
 
-        {/* Officer only routes */}
-        <Route element={<ProtectedRoute allowedRoles={['Officer']} />}>
-          <Route path="/officer" element={<OfficerDashboard />} />
-          <Route path="/officer/proposals" element={<ManageProposals />} />
-          <Route path="/officer/claims" element={<ManageClaims />} />
-        </Route>
-      </Routes>
+          {/* Officer only routes */}
+          <Route element={<ProtectedRoute allowedRoles={['Officer']} />}>
+            <Route path="/officer" element={<OfficerDashboard />} />
+            <Route path="/officer/proposals" element={<ManageProposals />} />
+            <Route path="/officer/claims" element={<ManageClaims />} />
+          </Route>
+        </Routes>
+      </AnimatePresence>
     </>
   );
 }

@@ -5,188 +5,201 @@ import { getAllPolicies } from '../api/policies';
 import { submitProposal } from '../api/proposals';
 import { toast } from 'react-toastify';
 import type { Policy } from '../types';
-import { Box, Button, TextField, Typography, Paper, Container, Grid, MenuItem, Select, FormControl, InputLabel, Checkbox, FormControlLabel, FormGroup } from '@mui/material';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowRight, ArrowLeft, Check, Car, Bike, Truck, Caravan, Hash, Type, Calendar } from 'lucide-react';
+import GlassCard from '../components/ui/GlassCard';
+import MeshGradientBg from '../components/ui/MeshGradientBg';
+import GradientButton from '../components/ui/GradientButton';
+import ScrollReveal from '../components/ui/ScrollReveal';
+
+const STEPS = ['Select Policy', 'Vehicle Details', 'Add-ons', 'Review'];
+const categoryIcons: Record<string, any> = { Car, Motorcycle: Bike, Truck, CamperVan: Caravan };
 
 const SubmitProposal = () => {
   const [policies, setPolicies] = useState<Policy[]>([]);
   const [selectedPolicy, setSelectedPolicy] = useState<Policy | null>(null);
   const [selectedAddOns, setSelectedAddOns] = useState<number[]>([]);
+  const [step, setStep] = useState(0);
   const navigate = useNavigate();
-
   const { register, handleSubmit, watch, formState: { isSubmitting }, setValue } = useForm();
   const watchedPolicyId = watch('policyId');
+  const watchedCategory = watch('vehicleCategory');
+  const watchedYear = watch('vehicleYear');
+  const watchedNumber = watch('vehicleNumber');
+  const watchedModel = watch('vehicleModel');
 
-  useEffect(() => {
-    getAllPolicies().then(res => setPolicies(Array.isArray(res.data) ? res.data : []));
-  }, []);
-
+  useEffect(() => { getAllPolicies().then(r => setPolicies(Array.isArray(r.data) ? r.data : [])); }, []);
   useEffect(() => {
     if (watchedPolicyId) {
-      const policy = policies.find(p => p.policyId === parseInt(watchedPolicyId));
-      setSelectedPolicy(policy || null);
+      const p = policies.find(p => p.policyId === parseInt(watchedPolicyId));
+      setSelectedPolicy(p || null);
       setSelectedAddOns([]);
     }
   }, [watchedPolicyId, policies]);
 
-  const toggleAddOn = (addOnId: number) => {
-    setSelectedAddOns(prev =>
-      prev.includes(addOnId)
-        ? prev.filter(id => id !== addOnId)
-        : [...prev, addOnId]
-    );
-  };
+  const toggleAddOn = (id: number) => setSelectedAddOns(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
 
   const onSubmit = async (data: any) => {
     try {
-      await submitProposal({
-        ...data,
-        policyId: parseInt(data.policyId),
-        vehicleYear: parseInt(data.vehicleYear),
-        selectedAddOnIds: selectedAddOns
-      });
+      await submitProposal({ ...data, policyId: parseInt(data.policyId), vehicleYear: parseInt(data.vehicleYear), selectedAddOnIds: selectedAddOns });
       toast.success('Proposal submitted successfully!');
       navigate('/my-proposals');
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Failed to submit proposal');
-    }
+    } catch (error: any) { toast.error(error.response?.data?.message || 'Failed to submit'); }
   };
 
+  const canProceed = () => {
+    if (step === 0) return !!watchedPolicyId;
+    if (step === 1) return !!(watchedCategory && watchedYear && watchedNumber && watchedModel);
+    return true;
+  };
+
+  const total = selectedPolicy ? selectedPolicy.basePrice + selectedPolicy.addOns.filter(a => selectedAddOns.includes(a.addOnId)).reduce((s, a) => s + a.addOnPrice, 0) : 0;
+
   return (
-    <Box sx={{ py: 8 }}>
-      <Container maxWidth="md">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          <Paper sx={{ p: { xs: 4, md: 6 }, borderRadius: '24px' }}>
-            <Typography variant="h4" sx={{ fontWeight: 800, mb: 4, background: 'linear-gradient(to right, #60a5fa, #a78bfa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-              Submit Insurance Proposal
-            </Typography>
+    <div className="relative min-h-screen pt-24 pb-16 px-6">
+      <MeshGradientBg variant="subtle" />
+      <div className="relative z-10 max-w-3xl mx-auto">
+        <ScrollReveal>
+          <h1 className="text-3xl font-extrabold gradient-text mb-2">Submit Insurance Proposal</h1>
+          <p className="text-[var(--text-secondary)] text-sm mb-8">Step {step + 1} of {STEPS.length} — {STEPS[step]}</p>
+        </ScrollReveal>
 
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <Grid container spacing={3}>
-                <Grid size={{ xs: 12 }}>
-                  <FormControl fullWidth variant="outlined">
-                    <InputLabel id="policy-label">Select Policy</InputLabel>
-                    <Select
-                      labelId="policy-label"
-                      label="Select Policy"
-                      defaultValue=""
-                      {...register('policyId', { required: true })}
-                      onChange={(e) => setValue('policyId', e.target.value)}
-                    >
-                      <MenuItem value="" disabled>-- Select a policy --</MenuItem>
-                      {policies.map(p => (
-                        <MenuItem key={p.policyId} value={p.policyId}>
-                          {p.policyName} - {p.vehicleCategory} (₹{p.basePrice})
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </Grid>
+        {/* Progress */}
+        <div className="flex items-center gap-2 mb-8">
+          {STEPS.map((s, i) => (
+            <div key={s} className="flex-1 flex items-center gap-2">
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 transition-all ${i <= step ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white' : 'bg-[var(--bg-glass)] border border-[var(--border-glass)] text-[var(--text-muted)]'}`}>{i < step ? <Check size={14} /> : i + 1}</div>
+              {i < STEPS.length - 1 && <div className={`h-0.5 flex-1 rounded-full transition-all ${i < step ? 'bg-indigo-500' : 'bg-[var(--border-glass)]'}`} />}
+            </div>
+          ))}
+        </div>
 
-                <Grid size={{ xs: 12, sm: 6 }}>
-                  <FormControl fullWidth variant="outlined">
-                    <InputLabel id="category-label">Vehicle Category</InputLabel>
-                    <Select
-                      labelId="category-label"
-                      label="Vehicle Category"
-                      defaultValue=""
-                      {...register('vehicleCategory', { required: true })}
-                      onChange={(e) => setValue('vehicleCategory', e.target.value)}
-                    >
-                      <MenuItem value="" disabled>-- Select category --</MenuItem>
-                      <MenuItem value="Car">Car</MenuItem>
-                      <MenuItem value="Motorcycle">Motorcycle</MenuItem>
-                      <MenuItem value="Truck">Truck</MenuItem>
-                      <MenuItem value="CamperVan">CamperVan</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Grid>
-
-                <Grid size={{ xs: 12, sm: 6 }}>
-                  <TextField
-                    fullWidth
-                    label="Vehicle Year"
-                    type="number"
-                    variant="outlined"
-                    slotProps={{ htmlInput: { min: 2000, max: new Date().getFullYear() } }}
-                    {...register('vehicleYear', { required: true })}
-                  />
-                </Grid>
-
-                <Grid size={{ xs: 12, sm: 6 }}>
-                  <TextField
-                    fullWidth
-                    label="Vehicle Number"
-                    variant="outlined"
-                    placeholder="GJ01AB1234"
-                    {...register('vehicleNumber', { required: true })}
-                  />
-                </Grid>
-
-                <Grid size={{ xs: 12, sm: 6 }}>
-                  <TextField
-                    fullWidth
-                    label="Vehicle Model"
-                    variant="outlined"
-                    placeholder="Honda City 2021"
-                    {...register('vehicleModel', { required: true })}
-                  />
-                </Grid>
-
-                {selectedPolicy && selectedPolicy.addOns.length > 0 && (
-                  <Grid size={{ xs: 12 }}>
-                    <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, mt: 2 }}>
-                      Select Add-ons
-                    </Typography>
-                    <FormGroup>
-                      {selectedPolicy.addOns.map(addon => (
-                        <FormControlLabel
-                          key={addon.addOnId}
-                          control={
-                            <Checkbox
-                              checked={selectedAddOns.includes(addon.addOnId)}
-                              onChange={() => toggleAddOn(addon.addOnId)}
-                              color="primary"
-                            />
-                          }
-                          label={
-                            <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', minWidth: '200px' }}>
-                              <Typography variant="body1">{addon.addOnName}</Typography>
-                              <Typography variant="body1" sx={{ color: 'primary.main', fontWeight: 600, ml: 2 }}>
-                                +₹{addon.addOnPrice}
-                              </Typography>
-                            </Box>
-                          }
-                          sx={{ mb: 1, ml: 0, p: 1, borderRadius: 2, '&:hover': { bgcolor: 'rgba(255,255,255,0.05)' } }}
-                        />
-                      ))}
-                    </FormGroup>
-                  </Grid>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <GlassCard className="p-6 sm:p-8 mb-6">
+            <AnimatePresence mode="wait">
+              <motion.div key={step} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.3 }}>
+                {/* Step 0: Policy */}
+                {step === 0 && (
+                  <div className="space-y-4">
+                    <h2 className="text-xl font-bold text-[var(--text-primary)] mb-4">Choose a Policy</h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {policies.map(p => {
+                        const Icon = categoryIcons[p.vehicleCategory] || Car;
+                        const selected = watchedPolicyId === String(p.policyId);
+                        return (
+                          <label key={p.policyId} className={`relative flex items-start gap-3 p-4 rounded-2xl border cursor-pointer transition-all ${selected ? 'border-indigo-500 bg-indigo-500/10 shadow-glow-sm' : 'border-[var(--border-glass)] bg-[var(--bg-glass)] hover:border-indigo-500/30'}`}>
+                            <input type="radio" value={p.policyId} {...register('policyId', { required: true })} className="sr-only" />
+                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${selected ? 'bg-indigo-500 text-white' : 'bg-indigo-500/10 text-indigo-400'}`}><Icon size={20} /></div>
+                            <div>
+                              <p className="font-semibold text-[var(--text-primary)] text-sm">{p.policyName}</p>
+                              <p className="text-xs text-[var(--text-muted)]">{p.vehicleCategory} • ₹{p.basePrice}/yr</p>
+                            </div>
+                            {selected && <div className="absolute top-3 right-3 w-5 h-5 rounded-full bg-indigo-500 flex items-center justify-center"><Check size={12} className="text-white" /></div>}
+                          </label>
+                        );
+                      })}
+                    </div>
+                  </div>
                 )}
 
-                <Grid size={{ xs: 12 }}>
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    color="primary"
-                    size="large"
-                    fullWidth
-                    disabled={isSubmitting}
-                    sx={{ mt: 2, py: 1.5, fontSize: '1.1rem' }}
-                  >
-                    {isSubmitting ? 'Submitting...' : 'Submit Proposal'}
-                  </Button>
-                </Grid>
-              </Grid>
-            </form>
-          </Paper>
-        </motion.div>
-      </Container>
-    </Box>
+                {/* Step 1: Vehicle Details */}
+                {step === 1 && (
+                  <div className="space-y-4">
+                    <h2 className="text-xl font-bold text-[var(--text-primary)] mb-4">Vehicle Details</h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">Category</label>
+                        <select {...register('vehicleCategory', { required: true })} onChange={e => setValue('vehicleCategory', e.target.value)} className="w-full px-4 py-3 rounded-xl bg-[var(--bg-glass)] border border-[var(--border-glass)] text-[var(--text-primary)] text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500/50">
+                          <option value="">Select</option>
+                          <option value="Car">Car</option><option value="Motorcycle">Motorcycle</option><option value="Truck">Truck</option><option value="CamperVan">CamperVan</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">Vehicle Year</label>
+                        <div className="relative"><Calendar size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" /><input type="number" min={2000} max={new Date().getFullYear()} {...register('vehicleYear', { required: true })} className="w-full pl-11 pr-4 py-3 rounded-xl bg-[var(--bg-glass)] border border-[var(--border-glass)] text-[var(--text-primary)] text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500/50" placeholder="2024" /></div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">Vehicle Number</label>
+                        <div className="relative"><Hash size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" /><input {...register('vehicleNumber', { required: true })} className="w-full pl-11 pr-4 py-3 rounded-xl bg-[var(--bg-glass)] border border-[var(--border-glass)] text-[var(--text-primary)] text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500/50" placeholder="GJ01AB1234" /></div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">Vehicle Model</label>
+                        <div className="relative"><Type size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" /><input {...register('vehicleModel', { required: true })} className="w-full pl-11 pr-4 py-3 rounded-xl bg-[var(--bg-glass)] border border-[var(--border-glass)] text-[var(--text-primary)] text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500/50" placeholder="Honda City 2024" /></div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Step 2: Add-ons */}
+                {step === 2 && (
+                  <div>
+                    <h2 className="text-xl font-bold text-[var(--text-primary)] mb-4">Select Add-ons</h2>
+                    {selectedPolicy && selectedPolicy.addOns.length > 0 ? (
+                      <div className="space-y-2">
+                        {selectedPolicy.addOns.map(a => (
+                          <label key={a.addOnId} className={`flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition-all ${selectedAddOns.includes(a.addOnId) ? 'border-indigo-500 bg-indigo-500/10' : 'border-[var(--border-glass)] bg-[var(--bg-glass)] hover:border-indigo-500/30'}`}>
+                            <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${selectedAddOns.includes(a.addOnId) ? 'bg-indigo-500 border-indigo-500' : 'border-[var(--text-muted)]'}`}>
+                              {selectedAddOns.includes(a.addOnId) && <Check size={12} className="text-white" />}
+                            </div>
+                            <span className="flex-1 text-sm text-[var(--text-primary)]">{a.addOnName}</span>
+                            <span className="text-sm font-semibold text-indigo-400">+₹{a.addOnPrice}</span>
+                            <input type="checkbox" checked={selectedAddOns.includes(a.addOnId)} onChange={() => toggleAddOn(a.addOnId)} className="sr-only" />
+                          </label>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-[var(--text-secondary)] text-center py-8">No add-ons available for this policy.</p>
+                    )}
+                  </div>
+                )}
+
+                {/* Step 3: Review */}
+                {step === 3 && selectedPolicy && (
+                  <div>
+                    <h2 className="text-xl font-bold text-[var(--text-primary)] mb-4">Review & Submit</h2>
+                    <div className="space-y-3">
+                      {[
+                        ['Policy', selectedPolicy.policyName],
+                        ['Category', watchedCategory],
+                        ['Vehicle', `${watchedModel} (${watchedYear})`],
+                        ['Number', watchedNumber],
+                      ].map(([k, v]) => (
+                        <div key={k as string} className="flex justify-between py-2 border-b border-[var(--border-glass)]">
+                          <span className="text-sm text-[var(--text-muted)]">{k}</span>
+                          <span className="text-sm font-medium text-[var(--text-primary)]">{v}</span>
+                        </div>
+                      ))}
+                      {selectedAddOns.length > 0 && (
+                        <div className="py-2 border-b border-[var(--border-glass)]">
+                          <span className="text-sm text-[var(--text-muted)]">Add-ons</span>
+                          <div className="flex flex-wrap gap-1.5 mt-1">{selectedPolicy.addOns.filter(a => selectedAddOns.includes(a.addOnId)).map(a => (
+                            <span key={a.addOnId} className="px-2.5 py-1 rounded-lg bg-indigo-500/10 text-indigo-400 text-xs font-medium">{a.addOnName} (+₹{a.addOnPrice})</span>
+                          ))}</div>
+                        </div>
+                      )}
+                      <div className="flex justify-between items-baseline pt-4">
+                        <span className="text-lg font-semibold text-[var(--text-primary)]">Estimated Total</span>
+                        <span className="text-3xl font-extrabold gradient-text">₹{total.toLocaleString()}/yr</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </motion.div>
+            </AnimatePresence>
+          </GlassCard>
+
+          {/* Navigation */}
+          <div className="flex gap-3">
+            {step > 0 && <GradientButton type="button" variant="outline" onClick={() => setStep(s => s - 1)} icon={<ArrowLeft size={16} />}>Back</GradientButton>}
+            {step < 3 ? (
+              <GradientButton type="button" fullWidth onClick={(e: any) => { e.preventDefault(); setStep(s => s + 1); }} disabled={!canProceed()} iconRight={<ArrowRight size={16} />}>Continue</GradientButton>
+            ) : (
+              <GradientButton type="submit" fullWidth loading={isSubmitting} iconRight={!isSubmitting ? <Check size={16} /> : undefined}>{isSubmitting ? 'Submitting...' : 'Submit Proposal'}</GradientButton>
+            )}
+          </div>
+        </form>
+      </div>
+    </div>
   );
 };
 
