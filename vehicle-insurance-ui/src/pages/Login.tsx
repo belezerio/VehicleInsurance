@@ -5,7 +5,10 @@ import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { login } from '../api/auth';
 import { useAuth } from '../context/AuthContext';
-import { Box, Button, TextField, Typography, Paper, Container, Link } from '@mui/material';
+import { Box, Button, TextField, Typography, Paper, Link } from '@mui/material';
+import { Container as BootstrapContainer, Row, Col, Alert, Spinner } from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap-grid.min.css';
+import '../bootstrap-custom.scss';
 import { motion } from 'framer-motion';
 
 const schema = yup.object({
@@ -37,16 +40,22 @@ const Login = () => {
 
   return (
     <Box sx={{ minHeight: 'calc(100vh - 80px)', display: 'flex', alignItems: 'center', py: 8 }}>
-      <Container maxWidth="sm">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          <Paper sx={{ p: { xs: 4, md: 6 }, borderRadius: '24px' }}>
+      <BootstrapContainer>
+        <Row className="justify-content-center">
+          <Col xs={12} sm={10} md={8} lg={6} xl={5}>
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              <Paper sx={{ p: { xs: 4, md: 6 }, borderRadius: '24px' }}>
             <Typography variant="h4" sx={{ fontWeight: 800, mb: 4, textAlign: 'center', background: 'linear-gradient(to right, #60a5fa, #a78bfa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
               Welcome Back
             </Typography>
+            
+            <Alert variant="info" style={{ backgroundColor: 'rgba(59, 130, 246, 0.1)', color: '#60a5fa', borderColor: 'rgba(59, 130, 246, 0.2)', borderRadius: '12px', fontSize: '0.875rem' }}>
+              Ensure your credentials are correct before proceeding.
+            </Alert>
             
             <form onSubmit={handleSubmit(onSubmit)}>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
@@ -77,7 +86,14 @@ const Login = () => {
                   disabled={isSubmitting}
                   sx={{ mt: 2, py: 1.5, fontSize: '1.1rem' }}
                 >
-                  {isSubmitting ? 'Logging in...' : 'Login'}
+                  {isSubmitting ? (
+                    <>
+                      <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" style={{ marginRight: '8px' }} />
+                      Logging in...
+                    </>
+                  ) : (
+                    'Login'
+                  )}
                 </Button>
               </Box>
             </form>
@@ -89,8 +105,10 @@ const Login = () => {
               </Link>
             </Typography>
           </Paper>
-        </motion.div>
-      </Container>
+            </motion.div>
+          </Col>
+        </Row>
+      </BootstrapContainer>
     </Box>
   );
 };

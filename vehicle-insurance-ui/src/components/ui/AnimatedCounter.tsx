@@ -13,14 +13,13 @@ const AnimatedCounter = ({ end, duration = 2, prefix = '', suffix = '', classNam
   const [count, setCount] = useState(0);
   const ref = useRef<HTMLSpanElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-50px' });
-  const hasAnimated = useRef(false);
+  const prevEnd = useRef(0);
 
   useEffect(() => {
-    if (!isInView || hasAnimated.current) return;
-    hasAnimated.current = true;
+    if (!isInView) return;
 
     const startTime = performance.now();
-    const startValue = 0;
+    const startValue = prevEnd.current;
 
     const animate = (currentTime: number) => {
       const elapsed = currentTime - startTime;
@@ -38,6 +37,7 @@ const AnimatedCounter = ({ end, duration = 2, prefix = '', suffix = '', classNam
     };
 
     requestAnimationFrame(animate);
+    prevEnd.current = end;
   }, [isInView, end, duration]);
 
   return (
