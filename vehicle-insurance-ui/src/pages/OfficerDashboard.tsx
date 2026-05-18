@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { useAuth } from '../context/AuthContext';
 import { getAllProposals } from '../api/proposals';
 import { getAllClaims } from '../api/claims';
+import { triggerReminders } from '../api/jobs';
 import { motion } from 'framer-motion';
-import { FileText, Activity, Users, ArrowRight, Clock } from 'lucide-react';
+import { FileText, Activity, Users, ArrowRight, Clock, Bell } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import GlassCard from '../components/ui/GlassCard';
 import AnimatedCounter from '../components/ui/AnimatedCounter';
@@ -31,6 +33,16 @@ const OfficerDashboard = () => {
     };
     load();
   }, []);
+
+  const handleTriggerReminders = async () => {
+    try {
+      await triggerReminders();
+      toast.success('Cron job triggered: Premium Reminder emails sent!');
+      alert('The simulated email has been saved to the backend container or local directory! Check the VehicleInsurance.API/Emails folder.');
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Failed to trigger cron job');
+    }
+  };
 
   const pendingP = proposals.filter(p => p.status === 'ProposalSubmitted').length;
   const pendingC = claims.filter(c => c.status === 'Filed').length;
@@ -89,9 +101,10 @@ const OfficerDashboard = () => {
             {[
               { label: 'Manage Proposals', desc: `${pendingP} pending`, icon: FileText, to: '/officer/proposals', color: 'from-blue-500 to-indigo-500' },
               { label: 'Manage Claims', desc: `${pendingC} pending`, icon: Activity, to: '/officer/claims', color: 'from-purple-500 to-pink-500' },
+              { label: 'Trigger Reminders', desc: `Send expiration emails`, icon: Bell, action: handleTriggerReminders, color: 'from-amber-500 to-orange-500' },
             ].map((a, i) => (
               <ScrollReveal key={a.label} delay={i * 0.1}>
-                <GlassCard className="p-5" glow onClick={() => navigate(a.to)}>
+                <GlassCard className="p-5" glow onClick={a.action ? a.action : () => navigate(a.to!)}>
                   <div className="flex items-center gap-4">
                     <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${a.color} flex items-center justify-center shadow-lg`}><a.icon size={24} className="text-white" /></div>
                     <div className="flex-1">
